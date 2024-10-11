@@ -1359,4 +1359,39 @@
         <tag>PostgreSQL</tag>
       </tags>
   </entry>
+  <entry>
+    <title>PostgreSQL事务</title>
+    <url>/2024/10/11/20241011-05.html</url>
+    <content><![CDATA[<h1 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h1><p>在日常操作中，对于一组相关操作，通常要求要么都成功，要么都失败。在关系型数据库中，称这一组操作为事务。为了保证整体事务的安全性，有ACID的概念：</p>
+<ul>
+<li>原子性A：事务是一个最小的执行单位，一次事务中的操作要么都成功，要么都失败。</li>
+<li>一致性C：在事务完成时，所有数据必须保持在一致的状态。（事务完成后吗，最终结果和预期结果是一致的）</li>
+<li>隔离性I：一次事务操作，要么是其他事务操作前的状态，要么是其他事务操作后的状态，不存在中间状态。</li>
+<li>持久性D：事务提交后，数据会落到本地磁盘，修改是永久性的。</li>
+</ul>
+<p>PostgreSQL中，在事务的并发问题里，也是基于MVCC，多版本并发控制去维护数据的一致性。相比于传统的锁操作，MVCC最大的有点就是可以让读写互相不冲突。</p>
+<p>当然，PostgreSQL也支持表锁和行锁，可以解决写写的冲突问题。</p>
+<p>PostgreSQL相比于其他数据，有一个比较大的优化，DDL也可以包含在一个事务中。比如集群中的操作，一个事务可以保证多个节点都构建出一个表，才算成功。</p>
+<h1 id="事务的基本使用"><a href="#事务的基本使用" class="headerlink" title="事务的基本使用"></a>事务的基本使用</h1><p>首先基于前面的各种操作，应该已经体会到了，PostgreSQL是自动提交事务，这跟MySQL是一样的。</p>
+<p>可以基于关闭PostgreSQL的自动提交事务来进行操作。</p>
+<p><img src="/./assets/20241011/8242ac908f9b458fa483140b0ee93307.png" alt="事务"></p>
+<p>但是上述方式比较麻烦，传统的方式就三个命令：</p>
+<ul>
+<li>begin：开始事务</li>
+<li>commit：提交事务</li>
+<li>rollback：回滚事务</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 操作</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test <span class="keyword">values</span> (<span class="number">7</span>,<span class="string">&#x27;bbb&#x27;</span>,<span class="number">12</span>,<span class="number">5</span>);</span><br><span class="line"><span class="comment">-- 提交事务 </span></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="保存点"><a href="#保存点" class="headerlink" title="保存点"></a>保存点</h1><p>比如项目中有一个大事务操作，不好控制，超时有影响，回滚会造成一切重来，成本太高。</p>
+<p>我针对大事务，拆分成几个部分，第一部分完成后，构建一个保存点。如果后面操作失败了，需要回滚，不需要全盘回滚，回滚到之前的保存点，继续重试。</p>
+<p>保存点似乎破坏了整体事务的原子性，但是只要操作合理，可以在保存点的举出上，做重试，只要重试不成功，依然可以全盘回滚。</p>
+<p>比如一个电商项目，下订单，扣库存，创建订单，删除购物车，增加用户积分，通知商家等等，这个就是一个大事务。可以将扣库存和下订单这种核心功能完成后，增加一个保存点，如果说后续操作有失败的，可以从创建订单成功后的阶段，再做重试。</p>
+<p>不过其实上述的业务，基于最终一致性有更好的处理方式，可以保证可用性。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- savepoint操作</span></span><br><span class="line"><span class="comment">-- 开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 插入一条数据</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test <span class="keyword">values</span> (<span class="number">8</span>,<span class="string">&#x27;铃铛&#x27;</span>,<span class="number">55</span>,<span class="number">11</span>);</span><br><span class="line"><span class="comment">-- 添加一个保存点</span></span><br><span class="line"><span class="keyword">savepoint</span> ok1;</span><br><span class="line"><span class="comment">-- 再插入数据,比如出了一场</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test <span class="keyword">values</span> (<span class="number">9</span>,<span class="string">&#x27;大唐官府&#x27;</span>,<span class="number">66</span>,<span class="number">22</span>);</span><br><span class="line"><span class="comment">-- 回滚到之前的提交点</span></span><br><span class="line"><span class="keyword">rollback</span> <span class="keyword">to</span> <span class="keyword">savepoint</span> ok1;</span><br><span class="line"><span class="comment">-- 就可以开始重试操作，重试成功，commit，失败可以rollback;</span></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>PostgreSQL</tag>
+      </tags>
+  </entry>
 </search>
