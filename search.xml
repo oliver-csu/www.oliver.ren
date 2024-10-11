@@ -927,7 +927,7 @@
 <tr>
 <td>IP类型</td>
 <td>cidr（存储ip地址）</td>
-<td>MySQL也不支持~</td>
+<td>MySQL不支持</td>
 </tr>
 </tbody></table>
 <p>其他类型：<a href="http://www.postgres.cn/docs/12/datatype.html">http://www.postgres.cn/docs/12/datatype.html</a></p>
