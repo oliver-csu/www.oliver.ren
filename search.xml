@@ -857,4 +857,83 @@
         <tag>PostgreSQL</tag>
       </tags>
   </entry>
+  <entry>
+    <title>PostgreSQL数据类型</title>
+    <url>/2024/10/11/20241011-02.html</url>
+    <content><![CDATA[<p>PostgreSQL支持的类型特别丰富，大多数的类型和MySQL都有对应的关系</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>说明</th>
+<th>对比MySQL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>布尔类型</td>
+<td>boolean，标准的布尔类型，只能存储true，false</td>
+<td>MySQL中虽然没有对应的boolean，但是有替换的类型，数值的tinyint类型，和PostgreSQL的boolean都是占1个字节。</td>
+</tr>
+<tr>
+<td>整型</td>
+<td>smallint（2字节），integer（4字节），bigint（8字节）</td>
+<td>跟MySQL没啥区别。</td>
+</tr>
+<tr>
+<td>浮点型</td>
+<td>decimal，numeric（和decimal一样，精准浮点型），real（float），double precision（double），money（货币类型）</td>
+<td>和MySQL基本也没区别，MySQL支持float，double，decimal。MySQL没有这个货币类型。</td>
+</tr>
+<tr>
+<td>字符串类型</td>
+<td>varchar(n)（character varying），char(n)（character），text</td>
+<td>这里和MySQL基本没区别。但PostgreSQL存储的varchar类型，可以存储一个G。MySQL最大存储65535b。</td>
+</tr>
+<tr>
+<td>日期类型</td>
+<td>date（年月日），time（时分秒），timestamp（年月日时分秒）（time和timestamp可以设置时区）</td>
+<td>没啥说的，和MySQL基本没区别，但MySQL有个datetime。</td>
+</tr>
+<tr>
+<td>二进制类型</td>
+<td>bytea-存储二进制类型</td>
+<td>MySQL也支持，MySQL中是blob</td>
+</tr>
+<tr>
+<td>位图类型</td>
+<td>bit(n)（定长位图），bit varying(n)（可变长度位图）</td>
+<td>就是存储0，1。MySQL也有，用的不多。</td>
+</tr>
+<tr>
+<td>枚举类型</td>
+<td>enum，跟Java的enum一样</td>
+<td>MySQL支持。</td>
+</tr>
+<tr>
+<td>几何类型</td>
+<td>点，直线，线段，圆等等</td>
+<td>MySQL不支持，一般开发不用。</td>
+</tr>
+<tr>
+<td>数组类型</td>
+<td>在类型后，追加[]，代表存储数组</td>
+<td>MySQL不支持</td>
+</tr>
+<tr>
+<td>JSON类型</td>
+<td>json（存储JSON数据的文本），jsonb（存储JSON二进制）</td>
+<td>可以存储JSON，MySQL8.x也支持</td>
+</tr>
+<tr>
+<td>IP类型</td>
+<td>cidr（存储ip地址）</td>
+<td>MySQL也不支持~</td>
+</tr>
+</tbody></table>
+<p>其他类型：<a href="http://www.postgres.cn/docs/12/datatype.html">http://www.postgres.cn/docs/12/datatype.html</a></p>
+]]></content>
+      <tags>
+        <tag>PostgreSQL</tag>
+      </tags>
+  </entry>
 </search>
