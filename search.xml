@@ -839,4 +839,22 @@
         <tag>PostgreSQL</tag>
       </tags>
   </entry>
+  <entry>
+    <title>PostgreSQL图形化界面pgAdmin安装使用</title>
+    <url>/2024/10/11/20241011-01.html</url>
+    <content><![CDATA[<p>图形化界面可以连接PostgreSQL的很多，Navicat（收费）。</p>
+<p>也可以直接使用PostgreSQL官方提供的图形化界面（完全免费）。</p>
+<p>pgAdmin官方地址：<a href="https://www.pgadmin.org/">https://www.pgadmin.org/</a></p>
+<p>Windows安装包下载地址：<a href="https://www.postgresql.org/ftp/pgadmin/pgadmin4/v6.9/windows/">https://www.postgresql.org/ftp/pgadmin/pgadmin4/v6.9/windows/</a></p>
+<p>下载后，一直下一步进行傻瓜式安装。</p>
+<h1 id="打开pgAdmin"><a href="#打开pgAdmin" class="headerlink" title="打开pgAdmin"></a>打开pgAdmin</h1><p><img src="/./assets/20241011/4469cb29ad264370a062003171e87b86.png" alt="首次打开设置密码"></p>
+<h1 id="添加一个连接"><a href="#添加一个连接" class="headerlink" title="添加一个连接"></a>添加一个连接</h1><p><img src="/./assets/20241011/887772b05f504814b326794ca72051f4.png" alt="添加一个连接"></p>
+<p>保存</p>
+<h1 id="查看数据库的信息"><a href="#查看数据库的信息" class="headerlink" title="查看数据库的信息"></a>查看数据库的信息</h1><p><img src="/./assets/20241011/23b5dd8af15c4bdc837910ead0cb3e89.png" alt="查看连接"></p>
+<h1 id="切换语言"><a href="#切换语言" class="headerlink" title="切换语言"></a>切换语言</h1><p><img src="/./assets/20241011/61b55c22e93349f097d76d09b0e66285.png" alt="切换语言"></p>
+]]></content>
+      <tags>
+        <tag>PostgreSQL</tag>
+      </tags>
+  </entry>
 </search>
