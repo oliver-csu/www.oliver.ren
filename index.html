@@ -149,7 +149,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">25</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -171,6 +171,265 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/12/20241012-05.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Oliver King">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oliver's Blog">
+      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Oliver's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/12/20241012-05.html" class="post-title-link" itemprop="url">PostgreSQL主从同步</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-10-12 14:42:31 / 修改时间：14:47:03" itemprop="dateCreated datePublished" datetime="2024-10-12T14:42:31+08:00">2024-10-12</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>PostgreSQL自身只支持简单的主从，没有主从自动切换，仿照类似Nginx的效果一样，采用keepalived的形式，在主节点宕机后，通过脚本的执行完成主从切换。</p>
+<h1 id="主从实现（异步流复制）"><a href="#主从实现（异步流复制）" class="headerlink" title="主从实现（异步流复制）"></a>主从实现（异步流复制）</h1><p>操作方式类似与之前的备份和恢复</p>
+<h2 id="准备环境："><a href="#准备环境：" class="headerlink" title="准备环境："></a>准备环境：</h2><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>IP</th>
+<th>端口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Master</td>
+<td>192.168.11.66</td>
+<td>5432</td>
+</tr>
+<tr>
+<td>Standby</td>
+<td>192.168.11.67</td>
+<td>5432</td>
+</tr>
+</tbody></table>
+<p>准备两台虚拟机，完成上述的环境准备</p>
+<p>修改好ip，安装好postgresql服务</p>
+<h2 id="给主准备一些数据"><a href="#给主准备一些数据" class="headerlink" title="给主准备一些数据"></a>给主准备一些数据</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t1 (id <span class="type">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t1 <span class="keyword">values</span> (<span class="number">111</span>);</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t1;</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置主节点信息（主从都配置，因为后面会有主从切换的操作）"><a href="#配置主节点信息（主从都配置，因为后面会有主从切换的操作）" class="headerlink" title="配置主节点信息（主从都配置，因为后面会有主从切换的操作）"></a>配置主节点信息（主从都配置，因为后面会有主从切换的操作）</h2><p>修改pg_hba.conf文件</p>
+<p><img src="/./assets/20241012/a0f7502d42f5409e988cb646277ef2b1.png" alt="主节点pg_hba.conf"></p>
+<p>修改postgresql.conf文件</p>
+<p><img src="/./assets/20241012/2359919acb5f4182b3c1fe82e08e5e9f.png" alt="主节点postgresql.conf"></p>
+<p>提前构建好归档日志和备份目录，并且设置好拥有者</p>
+<p><img src="/./assets/20241012/1921cb7b27644fc39b4c776113257dcd.png" alt="准备归档目录"></p>
+<p>重启PostgreSQL服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart postgresql-12</span><br></pre></td></tr></table></figure>
+
+<h2 id="从节点加入到主节点"><a href="#从节点加入到主节点" class="headerlink" title="从节点加入到主节点"></a>从节点加入到主节点</h2><p>关闭从节点服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop postgresql-12</span><br></pre></td></tr></table></figure>
+
+<p>删除从节点数据（删除data目录）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf ~/12/data/*</span><br></pre></td></tr></table></figure>
+
+<p>基于pbk去主节点备份数据</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 确认好备份的路径，还有主节点的ip</span></span><br><span class="line">pg_basebackup -D /pgbasebackup -Ft -Pv -Upostgres -h 192.168.11.66 -p 5432 -R</span><br></pre></td></tr></table></figure>
+
+<p>恢复数据操作，解压tar包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /pgbasebackuo</span><br><span class="line">tar -xf base.tar -C ~/12/data</span><br><span class="line">tar -xf pg_wal.tar -C /archive</span><br></pre></td></tr></table></figure>
+
+<p>修改postgresql.auto.conf文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 确认有这两个配置，一般第一个需要手写，第二个会自动生成</span><br><span class="line">restore_command = &#x27;cp /archive/%f %p&#x27;</span><br><span class="line">primary_conninfo = &#x27;user=postgres password=postgres host=192.168.11.66 port=5432 sslmode=prefer sslcompression=0 gssencmode=prefer krbsrvname=postgres target_session_attrs=any&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>修改standby.signal文件，开启从节点备份模式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 开启从节点备份</span><br><span class="line">standby_mode = &#x27;on&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>启动从节点服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart postgresql-12</span><br></pre></td></tr></table></figure>
+
+<p>查看主从信息</p>
+<ul>
+<li>查看从节点是否有t1表</li>
+<li>主节点添加一行数据，从节点再查询，可以看到最新的数据</li>
+<li>从节点无法完成写操作，他是只读模式</li>
+<li>主节点查看从节点信息<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from pg_stat_replication</span><br></pre></td></tr></table></figure></li>
+<li>从节点查看主节点信息<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from pg_stat_wal_receiver</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="主从切换（不推荐）"><a href="#主从切换（不推荐）" class="headerlink" title="主从切换（不推荐）"></a>主从切换（不推荐）</h1><p>其实主从的本质就是从节点去主节点不停的备份新的数据。</p>
+<p>配置文件的系统其实就是两个：</p>
+<ul>
+<li>standby.signal文件，这个是从节点开启备份</li>
+<li>postgresql.auto.conf文件，这个从节点指定主节点的地址信息</li>
+</ul>
+<p>切换就是原主追加上述配置，原从删除上述配追</p>
+<p>1、主从节点全部stop停止：</p>
+<p>2、原从删除上述配置：</p>
+<p>3、原从新主启动服务：</p>
+<p>4、原主新从去原从新主备份一次数据：pg_basebackup操作，同时做解压，然后修改postgresql.conf文件以及standby.signal配置文件</p>
+<p>5、启动原主新从查看信息</p>
+<h1 id="主从故障切换"><a href="#主从故障切换" class="headerlink" title="主从故障切换"></a>主从故障切换</h1><p>默认情况下，这里的主从备份是异步的，导致一个问题，如果主节点写入的数据还没有备份到从节点，主节点忽然宕机了，导致后面如果基于上述方式实现主从切换，数据可能丢失。</p>
+<p>PGSQL在9.5版本后提供了一个pg_rewind的操作，基于归档日志帮咱们做一个比对，比对归档日志，是否有时间差冲突。</p>
+<p>实现操作：</p>
+<p>1、rewind需要开启一项配置才可以使用</p>
+<p>修改postgresql.conf中的 <strong>wal_log_hints &#x3D; ‘on’</strong></p>
+<p>2、为了可以更方便的使用rewind，需要设置一下 <strong>&#x2F;usr&#x2F;pgsql-12&#x2F;bin&#x2F;</strong> 的环境变量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/profile</span><br><span class="line">  追加信息</span><br><span class="line">  export PATH=/usr/pgsql-12/bin/:$PATH</span><br><span class="line">source /etc/profile</span><br></pre></td></tr></table></figure>
+
+<p>3、模拟主库宕机，直接对主库关机</p>
+<p>4、从节点切换为主节点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 因为他会去找$PGDATA，我没配置，就基于-D指定一下PGSQL的data目录</span><br><span class="line">pg_ctl promote -D ~/12/data/</span><br></pre></td></tr></table></figure>
+
+<p>5、将原主节点开机，执行命令，搞定归档日志的同步</p>
+<ul>
+<li>启动虚拟机</li>
+<li>停止PGSQL服务<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pg_ctl stop -D ~/12/data</span><br></pre></td></tr></table></figure></li>
+<li>基于pg_rewind加入到集群<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pg_rewind -D ~/12/data/ --source-server=&#x27;host=192.168.11.66 user=postgres password=postgres&#x27;</span><br></pre></td></tr></table></figure></li>
+<li>如果上述命令失败，需要启动再关闭PGSQL，并且在执行，完成归档日志的同步<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pg_ctl start -D ~/12/data</span><br><span class="line">pg_ctl stop -D ~/12/data</span><br><span class="line">pg_rewind -D ~/12/data/ --source-server=&#x27;host=192.168.11.66 user=postgres password=postgres&#x27;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>6、修改新从节点的配置，然后启动</p>
+<ul>
+<li>构建standby.signal<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">standby_mode = &#x27;on&#x27;</span><br></pre></td></tr></table></figure></li>
+<li>修改postgresql.auto.conf文件<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 注意ip地址</span><br><span class="line">primary_conninfo = &#x27;user=postgres password=postgres host=192.168.11.66 port=5432 sslmode=prefer sslcompression=0 gssencmode=prefer krbsrvname=postgres target_session_attrs=any&#x27;</span><br><span class="line">restore_command = &#x27;cp /archive/%f %p&#x27;</span><br></pre></td></tr></table></figure></li>
+<li>启动新的从节点<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pg_ctl start -D ~/12/data/</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/12/20241012-04.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Oliver King">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oliver's Blog">
+      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Oliver's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/12/20241012-04.html" class="post-title-link" itemprop="url">PostgreSQL数据迁移工具——pgloader</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-10-12 14:37:10 / 修改时间：14:38:01" itemprop="dateCreated datePublished" datetime="2024-10-12T14:37:10+08:00">2024-10-12</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>PostgreSQL做数据迁移的插件非常多，可以从MySQL迁移到PostgreSQL，也可以基于其他数据源迁移到PostgreSQL。</p>
+<p>这种迁移的插件很多，这里只以pgloader举例，pgloader使用起来特别的方便。</p>
+<p>以MySQL数据迁移到PostgreSQL为例，分为几个操作：</p>
+<p>1、准备MySQL服务（防火墙问题，远程连接问题，权限问题）</p>
+<p>准备了一个数据库，里面大概有26W条左右的数据。</p>
+<p>2、准备PostgreSQL的服务</p>
+<p>3、安装pgloader</p>
+<p>pgloader可以安装在任何位置，比如安装在MySQL所在服务，或者PostgreSQL所在服务，再或者一个独立的服务都可以</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 用root用户下载</span></span><br><span class="line">yum -y install pgloader</span><br></pre></td></tr></table></figure>
+
+<p>4、准备pgloader需要的脚本文件</p>
+<p>官方文档： <a target="_blank" rel="noopener" href="https://pgloader.readthedocs.io/en/latest/">https://pgloader.readthedocs.io/en/latest/</a></p>
+<p>注意：PostgreSQL的数据库要提前构建好才可以。</p>
+<p><img src="/./assets/20241012/bd2da947a0e44ed1bfbef08a3f576dc6.png" alt="PGLOADER脚本"></p>
+<p>5、执行脚本，完成数据迁移</p>
+<p>先确认pgloader命令可以使用</p>
+<p><img src="/./assets/20241012/2d963c672b4c4847bf0c5187d48a0aea.png" alt="PGLOADER命令测试"></p>
+<p>执行脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pgloader 刚刚写好的脚本文件</span><br></pre></td></tr></table></figure>
+
+<p><img src="/./assets/20241012/56bebeef0f02497aaaa27fa5664c3142.png" alt="PGLOADER执行"></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1418,239 +1677,6 @@
 <p>保存</p>
 <h1 id="查看数据库的信息"><a href="#查看数据库的信息" class="headerlink" title="查看数据库的信息"></a>查看数据库的信息</h1><p><img src="/./assets/20241011/23b5dd8af15c4bdc837910ead0cb3e89.png" alt="查看连接"></p>
 <h1 id="切换语言"><a href="#切换语言" class="headerlink" title="切换语言"></a>切换语言</h1><p><img src="/./assets/20241011/61b55c22e93349f097d76d09b0e66285.png" alt="切换语言"></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/10/20241010-06.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Oliver King">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Oliver's Blog">
-      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Oliver's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/10/20241010-06.html" class="post-title-link" itemprop="url">PostgreSQL的基础操作</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-10-10 20:06:58 / 修改时间：20:24:42" itemprop="dateCreated datePublished" datetime="2024-10-10T20:06:58+08:00">2024-10-10</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>在psql命令行（客户端）下，执行了一次\l，查看所有的库信息</p>
-<p>可以直接基于psql查看一些信息，也可以基于psql进入到命令行后，再做具体操作</p>
-<p><img src="/./assets/20241010/dcd871238f4549649018fc8b07c6dc93.png" alt="\l查看所有的库信息"></p>
-<p>可以直接基于psql操作。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">可以使用psql --help，查看psql的命令</span><br><span class="line">可以直接进入到命令行的原因是psql默认情况下，就是以postgres用户去连接本地的pgsql，所以可以直接进入</span><br><span class="line">下面的图是默认的连接方式</span><br></pre></td></tr></table></figure>
-
-<p><img src="/./assets/20241010/490b99cc853d406e87a8f9b05a1c88e9.png" alt="默认连接方式"></p>
-<p>后面都基于psql的命令行（客户端）去进行操作</p>
-<p>命令不用背，需要使用的时候，直接找帮助文档，在psql命令行中，直接输入如下命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">\help，即可查看到数据库级别的一些命令</span><br><span class="line">\?，可以查看到服务级别的一些命令</span><br></pre></td></tr></table></figure>
-
-<h1 id="用户相关"><a href="#用户相关" class="headerlink" title="用户相关"></a>用户相关</h1><p>构建用户命令：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># <span class="keyword">create</span> <span class="keyword">user</span>默认有连接权限，而<span class="keyword">create</span> role没有，但可以基于选项设置</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> 名称 [ [ <span class="keyword">WITH</span> ] 选项 [ ... ] ]</span><br><span class="line"><span class="keyword">CREATE</span> ROLE 名称 [ [ <span class="keyword">WITH</span> ] 选项 [ ... ] ]</span><br></pre></td></tr></table></figure>
-
-<p>创建一个超级管理员用户：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> root <span class="keyword">WITH</span> SUPERUSER PASSWORD <span class="string">&#x27;root&#x27;</span>;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/./assets/20241010/b10afe02df1c45b6bdab8f03eced03f5.png" alt="创建超级管理员"></p>
-<p>退出psql命令行</p>
-<p><img src="/./assets/20241010/e31c67986b4d4570ad70200065d9e704.png" alt="退出命令行"></p>
-<p>尝试去用root用户登录的psql命令：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">psql -h 192.168.11.32 -p 5432 -U root -W</span><br></pre></td></tr></table></figure>
-
-<p>根据提示发现，光有用户不让登录，用户需要有一个数据库，创建一个root库：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create database root;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/./assets/20241010/d338efe105a44718969fbb369450e38d.png" alt="创建数据库"></p>
-<p>可以在不退出psql的前提下，直接切换数据库</p>
-<p><img src="/./assets/20241010/248de5f3be7446f5be9adf5225560268.png" alt="切换数据库"></p>
-<p>也可以退出psql，重新基于psql命令去切换用户以及数据库</p>
-<p>如果要修改用户信息，或者删除用户，可以查看</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改用户，直接基于ALTER命令操作</span></span><br><span class="line"><span class="comment"># 删除用户，直接基于DROP命令操作</span></span><br></pre></td></tr></table></figure>
-
-<p>如果要查看现在的全部用户信息</p>
-<p><img src="/./assets/20241010/d85d11baa4474370b5a4c97a18c07581.png" alt="查看全部用户信息"></p>
-<h1 id="权限操作"><a href="#权限操作" class="headerlink" title="权限操作"></a>权限操作</h1><p>权限操作前，要先掌握一下PGSQL的逻辑结构</p>
-<p><img src="/./assets/20241010/0ca8c4fb119f44d5befe8020a2cd416a.png" alt="逻辑结构图"></p>
-<p>PostgreSQL一个数据库中有多个schema，在每个schema下都有自己的相应的表信息，权限粒度比MySQL更细一些。</p>
-<p>在PostgreSQL中，权限的管理分为很多多层：</p>
-<ul>
-<li>server、cluster、tablespace级别：基于pg_hba.conf去配置；</li>
-<li>database级别：通过grant命令操作；</li>
-<li>namespace、schema级别：使用不多，暂不了解；</li>
-<li>对象级别：通过grant命令去设置。</li>
-</ul>
-<p>对database或者是对象级别做权限控制可以直接基于grant命令去操作，查看grant命令的使用帮助：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看grant命令</span></span><br><span class="line">\<span class="built_in">help</span> grant</span><br></pre></td></tr></table></figure>
-
-<h2 id="小任务"><a href="#小任务" class="headerlink" title="小任务"></a>小任务</h2><ul>
-<li>构建一个用户</li>
-<li>构建一个数据库</li>
-<li>在这个数据库下构建一个schema（数据库默认有一个public的schema）</li>
-<li>将这个schema的权限赋予用户</li>
-<li>在这个schema下构建一个表</li>
-<li>将表的select，update，insert权限赋予用户</li>
-</ul>
-<h2 id="完成上述操作"><a href="#完成上述操作" class="headerlink" title="完成上述操作"></a>完成上述操作</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 准备用户</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> user_oliver <span class="keyword">with</span> password <span class="string">&#x27;password&#x27;</span>;</span><br><span class="line"><span class="comment">-- 准备数据库</span></span><br><span class="line"><span class="keyword">create</span> database database_oliver;</span><br><span class="line"><span class="comment">-- 切换数据库</span></span><br><span class="line">\c db_oliver;</span><br><span class="line"><span class="comment">-- 构建schema</span></span><br><span class="line"><span class="keyword">create</span> schema schema_oliver;</span><br><span class="line"><span class="comment">-- 将schema的拥有者修改为oliver用户</span></span><br><span class="line"><span class="keyword">alter</span> schema schema_oliver owner <span class="keyword">to</span> user_oliver;</span><br><span class="line"><span class="comment">-- 将database_oliver库下的schema_oliver的schema中的表的增，改，查权限赋予给user_oliver用户</span></span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">select</span>,<span class="keyword">insert</span>,<span class="keyword">update</span> <span class="keyword">on</span> <span class="keyword">all</span> tables <span class="keyword">in</span> schema schema_oliver <span class="keyword">to</span> user_oliver;</span><br><span class="line"><span class="comment">-- 用postgres用户先构建一张表</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> schema_oliver.test(id <span class="type">int</span>);</span><br><span class="line"><span class="comment">-- 切换到laozheng用户。</span></span><br><span class="line">\c user_oliver <span class="operator">-</span>password </span><br><span class="line"><span class="comment">-- 报错：</span></span><br><span class="line"><span class="comment">-- 致命错误:  对用户&quot;-user_oliver&quot;的对等认证失败</span></span><br><span class="line"><span class="comment">-- Previous connection kept</span></span><br><span class="line"><span class="comment">-- 上述方式直接凉凉，原因是匹配连接方式时，基于pg_hba.conf文件去从上往下找</span></span><br><span class="line"><span class="comment">-- 找到的第一个是local，匹配上的。发现连接方式是peer。</span></span><br><span class="line"><span class="comment">-- peer代表用当前系统用户去连接PostgreSQL</span></span><br><span class="line"><span class="comment">-- 当前系统用户只有postgres，没有user_oliver，无法使用peer连接</span></span><br><span class="line"><span class="comment">-- 想构建user_oliver用户时，发现PostgreSQL的所有文件拥有者和所属组都是postgres，并且能操作的只有拥有者</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/./assets/20241010/7d9dc08d006c4b8fb7959b63f8138c07.png" alt="文件权限"></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-- 基于上述问题，不采用本地连接即可。</span><br><span class="line">-- 采用远程连接。</span><br><span class="line">psql -h 127.0.0.1 -p 5432 -U user_oliver -W</span><br><span class="line">-- 这样依赖，跳过了local链接方式的匹配，直接锁定到后面的host，host的连接方式是md5，md5其实就是密码加密了。</span><br><span class="line">-- 登录后，直接输入</span><br><span class="line">\dn</span><br><span class="line">-- 查看到当前database下有两个schema</span><br></pre></td></tr></table></figure>
-
-<p>这种权限的赋予方式，可以用管理员用户去构建整体表结构，分配指定用户，赋予不同的权限，就不怕用户误操作了。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/10/20241010-05.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Oliver King">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Oliver's Blog">
-      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Oliver's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/10/20241010-05.html" class="post-title-link" itemprop="url">PostgreSQL的配置</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-10-10 19:27:43 / 修改时间：19:28:50" itemprop="dateCreated datePublished" datetime="2024-10-10T19:27:43+08:00">2024-10-10</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>两个配置文件：</p>
-<ul>
-<li>PostgreSQL的远程连接配置；</li>
-<li>PostgreSQL的日志配置。</li>
-</ul>
-<p>PostgreSQL的主要配置放在数据目录下的， <strong>postgresql.conf</strong> 以及 <strong>pg_hba.conf</strong> 配置文件</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置文件目录</span></span><br><span class="line"><span class="built_in">ls</span> -l /var/lib/pgsql/12/data</span><br></pre></td></tr></table></figure>
-
-<p><img src="/./assets/20241010/c3f3386b5adf4a92ad6c30d34313c8c1.png" alt="配置文件"></p>
-<p>上图可以看到，PostgreSQL的核心文件，都属于postgres用户，操作的时候，别用root用户，容易出问题，先切换到postgres用户再操作。</p>
-<h1 id="远程连接配置"><a href="#远程连接配置" class="headerlink" title="远程连接配置"></a>远程连接配置</h1><p>PostgreSQL默认情况下不支持远程连接的，这个跟MySQL一样。</p>
-<ul>
-<li>MySQL给mysql.user追加用户，一般是采用grant的命令添加；</li>
-<li>PostgreSQL要基于配置文件修改，才能制定用户是否可以远程连接。</li>
-</ul>
-<p>修改pg_hba.conf配置文件</p>
-<p>用户以及对应数据库和连接方式的编写模板：</p>
-<p><img src="/./assets/20241010/df6c3f8af68240968efa999a51f6d9bd.png" alt="用户权限配置模板"></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 第一块</span><br><span class="line">local：代表本地连接，host代表可以指定连接的ADDRESS</span><br><span class="line"># 第二块</span><br><span class="line">database编写数据库名，如果写all，代表所有库都可以连接</span><br><span class="line"># 第三块</span><br><span class="line">user编写连接的用户，可以写all，代表所有用户</span><br><span class="line"># 第四块</span><br><span class="line">address代表那些IP地址可以连接</span><br><span class="line"># 第五块</span><br><span class="line">method加密方式，这块不用过多关注，使用md5即可</span><br><span class="line"># 示例配置：允许任意地址的全部用户连接所有数据库</span><br><span class="line">host    all             all             0.0.0.0/0               md5</span><br></pre></td></tr></table></figure>
-
-<p><img src="/./assets/20241010/0db1d87dd92b4068901649bf73c61dcd.png" alt="pg_hba.conf示例配置"></p>
-<p>为了实现远程连接，除了用户级别的这种配置，还要针对服务级别修改一个配置</p>
-<p>服务级别的配置在postgresql.conf</p>
-<p><img src="/./assets/20241010/52be7e1942834f18bf7d3109b342b842.png" alt="postgresql.conf原始配置"></p>
-<p>发现默认情况下，PostgreSQL只允许localhost连接，直接配置为*即可解决问题</p>
-<p><img src="/./assets/20241010/6f72192536624fe6bd9ec40e411afbe3.png" alt="postgresql.conf示例配置"></p>
-<p>为了生效，需要重启服务：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用root用户重启</span></span><br><span class="line"><span class="built_in">sudo</span> systemctl restart postgresql-12</span><br></pre></td></tr></table></figure>
-
-<h1 id="数据库的日志配置"><a href="#数据库的日志配置" class="headerlink" title="数据库的日志配置"></a>数据库的日志配置</h1><p>查看postgresql.conf文件</p>
-<p><img src="/./assets/20241010/210375d9a72e40639750216606d2e2a0.png" alt="postgresql.conf日志原始配置"></p>
-<p>PostgreSQL默认情况下，只保存7天的日志，循环覆盖。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 代表日志是开启的。</span><br><span class="line">logging_collector = on</span><br><span class="line"># 日志存放的路径，默认放到当前目录下的log里</span><br><span class="line">log_directory = &#x27;log&#x27;</span><br><span class="line"># 日志的文件名，默认是postgresql为前缀，星期作为后缀</span><br><span class="line">log_filename = &#x27;postgresql-%a.log&#x27;</span><br><span class="line"># 默认一周过后，日志文件会被覆盖</span><br><span class="line">log_truncate_on_rotation = on</span><br><span class="line"># 一天一个日志文件</span><br><span class="line">log_rotation_age = 1d</span><br><span class="line"># 一个日志文件，没有大小限制</span><br><span class="line">log_rotation_size = 0</span><br></pre></td></tr></table></figure>
 
       
     </div>
