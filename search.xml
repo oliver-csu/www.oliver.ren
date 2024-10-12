@@ -1436,4 +1436,36 @@
         <tag>PostgreSQL</tag>
       </tags>
   </entry>
+  <entry>
+    <title>PostgreSQL中的锁</title>
+    <url>/2024/10/12/20241012-02.html</url>
+    <content><![CDATA[<p>PostgreSQL中主要有两种锁，一个表锁，一个行锁。</p>
+<p>PostgreSQL中也提供了页锁，咨询锁，但不需要关注，只是为了锁的完整性。</p>
+<h1 id="表锁"><a href="#表锁" class="headerlink" title="表锁"></a>表锁</h1><p>表锁显而易见，就是锁住整张表。</p>
+<p>表锁也分为很多种模式，其中最核心的两个：</p>
+<ul>
+<li>ACCESS SHARE：共享锁（读锁），读读操作不阻塞，但是不允许出现写操作并行；</li>
+<li>ACCESS EXCLUSIVE：互斥锁（写锁），无论什么操作进来，都阻塞。</li>
+</ul>
+<p>具体的可以查看官网文档：<a href="http://postgres.cn/docs/12/explicit-locking.html">http://postgres.cn/docs/12/explicit-locking.html</a></p>
+<p>表锁的实现：</p>
+<p><img src="/./assets/20241012/5c734cd1b43e49d89c7089286d1c493b.png" alt="表锁语法"></p>
+<p>就是基于LOCK开启表锁，指定表的名字name，其次在MODE中指定锁的模式，NOWAIT可以指定是否在没有拿到锁时，一直等待。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1号连接</span></span><br><span class="line"><span class="comment">-- 基于互斥锁，锁住test表</span></span><br><span class="line"><span class="comment">-- 先开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 基于默认的ACCESS EXCLUSIVE锁住test表</span></span><br><span class="line">lock test <span class="keyword">in</span> ACCESS SHARE mode;</span><br><span class="line"><span class="comment">-- 操作</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> test;</span><br><span class="line"><span class="comment">-- 提交事务，锁释放</span></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+<p>当1号连接基于事务开启后，锁住当前表之后，如果使用默认的ACCESS EXCLUSIVE，其他连接操作表时，会直接阻塞住。</p>
+<p>如果1号是基于ACCESS SHARE共享锁时，其他线程查询当前表是不会锁住的。</p>
+<h1 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h1><p>PostgreSQL的行锁和MySQL的基本是一模一样的，基于select for update就可以指定行锁。</p>
+<p>MySQL中有一个概念，for update时，如果select的查询没有命中索引，可能会锁表。</p>
+<p>PostgerSQL有个特点，一般情况，在select的查询没有命中索引时，他不一定会锁表，依然会实现行锁。</p>
+<p>PostgreSQL的行锁，就两个，一个for update，一个for share。</p>
+<p>在开启事务之后，直接执行select * from table where 条件 for update;</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 先开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 基于for update 锁住id为3的数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">3</span> <span class="keyword">for</span> <span class="keyword">update</span>;</span><br><span class="line"><span class="keyword">update</span> test <span class="keyword">set</span> name <span class="operator">=</span> <span class="string">&#x27;v1&#x27;</span> <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">3</span>;</span><br><span class="line"><span class="comment">-- 提交事务，锁释放</span></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+<p>其他的连接要操作当前行，会阻塞住。</p>
+]]></content>
+      <tags>
+        <tag>PostgreSQL</tag>
+      </tags>
+  </entry>
 </search>
