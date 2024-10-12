@@ -149,7 +149,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -171,6 +171,109 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/12/20241012-01.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Oliver King">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oliver's Blog">
+      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Oliver's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/12/20241012-01.html" class="post-title-link" itemprop="url">PostgreSQL并发问题</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-10-12 09:43:35 / 修改时间：09:44:25" itemprop="dateCreated datePublished" datetime="2024-10-12T09:43:35+08:00">2024-10-12</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="事务的隔离级别"><a href="#事务的隔离级别" class="headerlink" title="事务的隔离级别"></a>事务的隔离级别</h1><p>在不考虑隔离性的前提下，事务的并发可能会出现的问题：</p>
+<ul>
+<li>脏读：读到了其他事务未提交的数据（这种情况必须避免）。</li>
+<li>不可重复读：同一事务中，多次查询同一数据，结果不一致，因为其他事务修改造成的（一些业务中不可重复读不是问题）。</li>
+<li>幻读：同一事务中，多次查询同一数据，因为其他事务对数据进行了增删吗，导致出现了一些问题（一些业务中幻读不是问题）。</li>
+</ul>
+<p>针对这些并发问题，关系型数据库有一些事务的隔离级别，一般用4种。</p>
+<ul>
+<li>READ UNCOMMITTED：读未提交（啥用没有，并且PostgreSQL没有，提供了只是为了完整性）；</li>
+<li>READ COMMITTED：读已提交，可以解决脏读（PostgreSQL默认隔离级别）；</li>
+<li>REPEATABLE READ：可重复读，可以解决脏读和不可重复读（MySQL默认隔离级别，PostgreSQL也提供了，但是设置为可重复读，效果还是串行化）；</li>
+<li>SERIALIZABLE：串行化，问题都解决了，使用了锁，效率慢。</li>
+</ul>
+<p>PostgreSQL在老版本中，只有两个隔离级别，读已提交和串行化，在PostgreSQL中就不存在脏读问题。</p>
+<h1 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h1><p>如果一个数据库，频繁的进行读写操作，为了保证安全，采用锁的机制。但如果采用锁机制，如果一些事务在写数据，另外一个事务就无法读数据，会造成读写之间相互阻塞。 大多数的数据库都会采用 <strong>多版本并发控制MVCC</strong> 来解决这个问题。</p>
+<p>比如你要查询一行数据，但是这行数据正在被修改，事务还没提交，如果此时对这行数据加锁，会导致其他的读操作阻塞，需要等待。如果采用PostgreSQL，他的内部会针对这一行数据保存多个版本，如果数据正在被写入，包就保存之前的数据版本。让读操作去查询之前的版本，不需要阻塞。等写操作的事务提交了，读操作才能查看到最新的数据。 这几个及时可以确保  <strong>读写操作没有冲突</strong> ，这个就是MVCC的主要特点。</p>
+<p><strong>写写操作，和MVCC没关系，那个就是加锁的方式</strong>。</p>
+<p>注意：这里的MVCC是基于读已提交的，如果是串行化，那就读不到了。</p>
+<p>在操作之前，先了解一下PostgreSQL中，每条数据都会自带两个字段：</p>
+<ul>
+<li>xmin：给当前事务分配的数据版本。如果有其他事务做了写操作，并且提交事务了，就给xmin分配新的版本。</li>
+<li>xmax：当前事务没有存在新版本，xmax就是0。如果有其他事务做了写操作，未提交事务，将写操作的版本放到xmax中。事务提交后，xmax会分配到xmin中，然后xmax归0。</li>
+</ul>
+<p><img src="/./assets/20241012/0d533d36a6a8489e877f092ef76e8141.png" alt="xmin与xmax"></p>
+<p>基于上图的操作查看一波效果：</p>
+<ul>
+<li>事务A：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 左，事务A</span></span><br><span class="line"><span class="comment">--1、开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">--2、查询某一行数据,  xmin = 630,xmax = 0</span></span><br><span class="line"><span class="keyword">select</span> xmin,xmax,<span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br><span class="line"><span class="comment">--3、每次开启事务后，会分配一个事务ID 事务id=631</span></span><br><span class="line"><span class="keyword">select</span> txid_current();</span><br><span class="line"><span class="comment">--7、修改id为8的数据，然后在本事务中查询   xmin = 631, xmax = 0</span></span><br><span class="line"><span class="keyword">update</span> test <span class="keyword">set</span> name <span class="operator">=</span> <span class="string">&#x27;铃铛&#x27;</span> <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br><span class="line"><span class="keyword">select</span> xmin,xmax,<span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br><span class="line"><span class="comment">--9、提交事务</span></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>事务B：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 右，事务B</span></span><br><span class="line"><span class="comment">--4、开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">--5、查询某一行数据,  xmin = 630,xmax = 0</span></span><br><span class="line"><span class="keyword">select</span> xmin,xmax,<span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br><span class="line"><span class="comment">--6、每次开启事务后，会分配一个事务ID 事务id=632</span></span><br><span class="line"><span class="keyword">select</span> txid_current();</span><br><span class="line"><span class="comment">--8、事务A修改完，事务B再查询  xmin = 630  xmax = 631</span></span><br><span class="line"><span class="keyword">select</span> xmin,xmax,<span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br><span class="line"><span class="comment">--10、事务A提交后，事务B再查询  xmin = 631  xmax = 0</span></span><br><span class="line"><span class="keyword">select</span> xmin,xmax,<span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1444,94 +1547,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/10/20241010-02.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Oliver King">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Oliver's Blog">
-      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Oliver's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/10/20241010-02.html" class="post-title-link" itemprop="url">PostgreSQL介绍</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2024-10-10 17:29:28 / 修改时间：17:52:47" itemprop="dateCreated datePublished" datetime="2024-10-10T17:29:28+08:00">2024-10-10</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>PostgreSQL是一个功能强大的 <strong>开源</strong> 的关系型数据库，底层基于C实现。</p>
-<p>PostgreSQL的开源协议和Linux内核版本的开源协议是一样的。也就是BSD协议，这个协议基本和MIT开源协议一样，就是你可以对PostgreSQL进行一些封装，然后商业化来收费。</p>
-<p>PostgreSQL的名字咋来的：之前叫Ingres，后面为了解决一些Ingres中的一些问题，作为后面的Ingres，就起名叫Postgre。</p>
-<p>PostgreSQL版本迭代的速度比较快，现在最新的正式的发布版本，已经到了15.RELEASE。</p>
-<p>PostgreSQL的版本选择一般有两种：</p>
-<ul>
-<li>如果为了稳定的运行，推荐使用12.x版本。</li>
-<li>如果想体验新特性，推荐使用14.x版本。</li>
-</ul>
-<p>PostgreSQL允许跨版本升级，而且没有什么大问题。</p>
-<p>PostgreSQL社区特别活跃，基本是三个月一发版，也就意味着很多常见的BUG都可以得到及时的修复。</p>
-<p>PostgreSQL其实在国外使用的比较多，国内暂时还是以MySQL为主。</p>
-<p>但是国内很多国产数据库都是基于PostgreSQL做的二次封装：比如华为GaussDB，还有腾讯的Tbase等。</p>
-<p>甚至很多公司原来玩的Oracle，直接平转到PostgreSQL，同时国内的很多云厂商都支持PostgreSQL了。</p>
-<p>PostgreSQL因为开源，所以有很多做数据迁移的工具，可以快速的从MySQL，SQLServer，Oracle直接平转到PostgreSQL，比如pgloader这样的数据迁移工具。</p>
-<p>PostgreSQL的官方社区地址：<a target="_blank" rel="noopener" href="https://www.postgresql.org/">https://www.postgresql.org/</a></p>
-<p>PostgreSQL的国内社区地址：<a target="_blank" rel="noopener" href="http://www.postgres.cn/v2/home">http://www.postgres.cn/v2/home</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
