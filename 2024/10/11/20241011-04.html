@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.oliver.ren","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="表的构建语句，比较简单。 核心在构建表时，要指定上一些约束。 约束主键123456-- 主键约束drop table test;create table test(    id bigserial primary key ,    name varchar(32));  非空123456-- 非空约束drop table test;create table test(    id bigseria">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL中的表">
+<meta property="og:url" content="https://www.oliver.ren/2024/10/11/20241011-04.html">
+<meta property="og:site_name" content="Oliver&#39;s Blog">
+<meta property="og:description" content="表的构建语句，比较简单。 核心在构建表时，要指定上一些约束。 约束主键123456-- 主键约束drop table test;create table test(    id bigserial primary key ,    name varchar(32));  非空123456-- 非空约束drop table test;create table test(    id bigseria">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.oliver.ren/assets/20241011/014acdfd4b5d42b1b34049ca903befe2.png">
+<meta property="og:image" content="https://www.oliver.ren/assets/20241011/56d9d4819d2a4fc4acb4016755a964aa.png">
+<meta property="og:image" content="https://www.oliver.ren/assets/20241011/135df3ee6c70451f9764918675e4dec8.png">
+<meta property="og:image" content="https://www.oliver.ren/assets/20241011/705b0b089c254e179c2020484b414dbb.png">
+<meta property="og:image" content="https://www.oliver.ren/assets/20241011/53e08b0b4e284a2eb021a0793aaf5b67.png">
+<meta property="og:image" content="https://www.oliver.ren/assets/20241011/6b8050fb7bde425f99a9f9b7693c7216.png">
+<meta property="og:image" content="https://www.oliver.ren/assets/20241011/92ede98fe99b4d5680b5e5aab4cf1fc6.png">
+<meta property="og:image" content="https://www.oliver.ren/assets/20241011/77126d2759c04ce383e95d2c97f42021.png">
+<meta property="og:image" content="https://www.oliver.ren/assets/20241011/c66251ffd1ff44e6afa963c371214790.png">
+<meta property="og:image" content="https://www.oliver.ren/assets/20241011/15db0ad80b9247069b709f12b1fe0901.png">
+<meta property="article:published_time" content="2024-10-11T06:46:05.000Z">
+<meta property="article:modified_time" content="2025-02-27T11:22:44.048Z">
+<meta property="article:author" content="Oliver King">
+<meta property="article:tag" content="PostgreSQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.oliver.ren/assets/20241011/014acdfd4b5d42b1b34049ca903befe2.png">
+
+
+<link rel="canonical" href="https://www.oliver.ren/2024/10/11/20241011-04.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.oliver.ren/2024/10/11/20241011-04.html","path":"2024/10/11/20241011-04.html","title":"PostgreSQL中的表"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>PostgreSQL中的表 | Oliver's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Oliver's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">小菜鸟要努力学习哦</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%A6%E6%9D%9F"><span class="nav-number">1.</span> <span class="nav-text">约束</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E9%94%AE"><span class="nav-number">1.1.</span> <span class="nav-text">主键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E7%A9%BA"><span class="nav-number">1.2.</span> <span class="nav-text">非空</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%94%AF%E4%B8%80"><span class="nav-number">1.3.</span> <span class="nav-text">唯一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5"><span class="nav-number">1.4.</span> <span class="nav-text">检查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E9%94%AE"><span class="nav-number">1.5.</span> <span class="nav-text">外键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E5%80%BC"><span class="nav-number">1.6.</span> <span class="nav-text">默认值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">触发器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A1%A8%E7%A9%BA%E9%97%B4"><span class="nav-number">3.</span> <span class="nav-text">表空间</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE"><span class="nav-number">4.</span> <span class="nav-text">视图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95"><span class="nav-number">5.</span> <span class="nav-text">索引</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">5.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%B1%BB"><span class="nav-number">5.2.</span> <span class="nav-text">分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95%E7%9C%8B%E6%95%88%E6%9E%9C"><span class="nav-number">5.3.</span> <span class="nav-text">创建索引看效果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%A9%E5%8C%96%E8%A7%86%E5%9B%BE"><span class="nav-number">6.</span> <span class="nav-text">物化视图</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Oliver King</p>
+  <div class="site-description" itemprop="description">Oliver's Blog|小菜鸟要努力学习哦</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/11/20241011-04.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Oliver King">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oliver's Blog">
+      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="PostgreSQL中的表 | Oliver's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PostgreSQL中的表
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-11 14:46:05" itemprop="dateCreated datePublished" datetime="2024-10-11T14:46:05+08:00">2024-10-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-02-27 19:22:44" itemprop="dateModified" datetime="2025-02-27T19:22:44+08:00">2025-02-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>表的构建语句，比较简单。 核心在构建表时，要指定上一些约束。</p>
+<h1 id="约束"><a href="#约束" class="headerlink" title="约束"></a>约束</h1><h2 id="主键"><a href="#主键" class="headerlink" title="主键"></a>主键</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 主键约束</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> test;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test(</span><br><span class="line">    id bigserial <span class="keyword">primary</span> key ,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">32</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="非空"><a href="#非空" class="headerlink" title="非空"></a>非空</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 非空约束</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> test;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test(</span><br><span class="line">    id bigserial <span class="keyword">primary</span> key ,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">not</span> <span class="keyword">null</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="唯一"><a href="#唯一" class="headerlink" title="唯一"></a>唯一</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> test;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test(</span><br><span class="line">    id bigserial <span class="keyword">primary</span> key ,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    id_card <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">unique</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test (name,id_card) <span class="keyword">values</span> (<span class="string">&#x27;张三&#x27;</span>,<span class="string">&#x27;333333333333333333&#x27;</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test (name,id_card) <span class="keyword">values</span> (<span class="string">&#x27;李四&#x27;</span>,<span class="string">&#x27;333333333333333333&#x27;</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test (name,id_card) <span class="keyword">values</span> (<span class="keyword">NULL</span>,<span class="string">&#x27;433333333333333333&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="检查"><a href="#检查" class="headerlink" title="检查"></a>检查</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 检查约束</span></span><br><span class="line"><span class="comment">-- 价格的表，price，discount_price</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> test;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test(</span><br><span class="line">    id bigserial <span class="keyword">primary</span> key,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">32</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    price <span class="type">numeric</span> <span class="keyword">check</span>(price <span class="operator">&gt;</span> <span class="number">0</span>),</span><br><span class="line">    discount_price <span class="type">numeric</span> <span class="keyword">check</span>(discount_price <span class="operator">&gt;</span> <span class="number">0</span>),</span><br><span class="line">    <span class="keyword">check</span>(price <span class="operator">&gt;=</span> discount_price)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test (name,price,discount_price) <span class="keyword">values</span> (<span class="string">&#x27;粽子&#x27;</span>,<span class="number">122</span>,<span class="number">12</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="外键"><a href="#外键" class="headerlink" title="外键"></a>外键</h2><p>用不到，这个不介绍，可以看文档学。</p>
+<h2 id="默认值"><a href="#默认值" class="headerlink" title="默认值"></a>默认值</h2><p>一般公司内，要求表中除了主键和业务字段之外，必须要有5个字段</p>
+<p>created，create_id，updated，update_id，is_delete</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 默认值</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test(</span><br><span class="line">    id bigserial <span class="keyword">primary</span> key,</span><br><span class="line">    created <span class="type">timestamp</span> <span class="keyword">default</span> <span class="built_in">current_timestamp</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h1 id="触发器"><a href="#触发器" class="headerlink" title="触发器"></a>触发器</h1><p>触发器Trigger，是由事件出发的一种存储过程</p>
+<p>当对标进行insert，update，delete，truncate操作时，会触发表的Trigger。</p>
+<p>构建两张表，学生信息表，学生分数表。</p>
+<p>在删除学生信息的同时，自动删除学生的分数。</p>
+<p>先构建表信息，填充数据</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> student(</span><br><span class="line">    id <span class="type">int</span>,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">32</span>)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> score(</span><br><span class="line">    id <span class="type">int</span>,</span><br><span class="line">    student_id <span class="type">int</span>,</span><br><span class="line">    math_score <span class="type">numeric</span>,</span><br><span class="line">    english_score <span class="type">numeric</span>,</span><br><span class="line">    chinese_score <span class="type">numeric</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> student (id,name) <span class="keyword">values</span> (<span class="number">1</span>,<span class="string">&#x27;张三&#x27;</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> student (id,name) <span class="keyword">values</span> (<span class="number">2</span>,<span class="string">&#x27;李四&#x27;</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span></span><br><span class="line">    score</span><br><span class="line">(id,student_id,math_score,english_score,chinese_score)</span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">(<span class="number">1</span>,<span class="number">1</span>,<span class="number">66</span>,<span class="number">66</span>,<span class="number">66</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span></span><br><span class="line">    score</span><br><span class="line">(id,student_id,math_score,english_score,chinese_score)</span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">(<span class="number">2</span>,<span class="number">2</span>,<span class="number">55</span>,<span class="number">55</span>,<span class="number">55</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> score;</span><br></pre></td></tr></table></figure>
+
+<p>为了完成级联删除的操作，需要编写pl&#x2F;sql。</p>
+<p>先查看一下PGSQL支持的plsql，查看一下PostgreSQL的plsql语法</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[ <span class="operator">&lt;&lt;</span>label<span class="operator">&gt;&gt;</span> ]</span><br><span class="line">[ <span class="keyword">DECLARE</span></span><br><span class="line">    declarations ]</span><br><span class="line"><span class="keyword">BEGIN</span></span><br><span class="line">    statements</span><br><span class="line"><span class="keyword">END</span> [ label ];</span><br></pre></td></tr></table></figure>
+
+<p>构建一个存储函数，测试一下plsql</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 优先玩一下plsql</span></span><br><span class="line"><span class="comment">-- $$可以理解为是一种特殊的单引号，避免你在declare，begin，end中使用单引号时，出现问题，</span></span><br><span class="line"><span class="comment">-- 需要在编写后，在$$之后添加上当前内容的语言。</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">function</span> test() <span class="keyword">returns</span> <span class="type">int</span> <span class="keyword">as</span> $$</span><br><span class="line"><span class="keyword">declare</span></span><br><span class="line">    money <span class="type">int</span> :<span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">return</span> money;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line">$$ <span class="keyword">language</span> plpgsql;</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> test();</span><br></pre></td></tr></table></figure>
+
+<p>在简单了解了一下plpgsql的语法后，编写一个触发器函数。</p>
+<p>触发器函数允许使用一些特殊变量</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">NEW</span></span><br><span class="line">数据类型是RECORD；该变量为行级触发器中的<span class="keyword">INSERT</span><span class="operator">/</span><span class="keyword">UPDATE</span>操作保持新数据行。在语句级别的触发器以及<span class="keyword">DELETE</span>操作，这个变量是<span class="keyword">null</span>。</span><br><span class="line"></span><br><span class="line"><span class="keyword">OLD</span></span><br><span class="line">数据类型是RECORD；该变量为行级触发器中的<span class="keyword">UPDATE</span><span class="operator">/</span><span class="keyword">DELETE</span>操作保持新数据行。在语句级别的触发器以及<span class="keyword">INSERT</span>操作，这个变量是<span class="keyword">null</span>。</span><br></pre></td></tr></table></figure>
+
+<p>构建一个删除学生分数的触发器函数。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 构建一个删除学生分数的触发器函数。</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">function</span> trigger_function_delete_student_score() <span class="keyword">returns</span> <span class="keyword">trigger</span> <span class="keyword">as</span> $$</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">delete</span> <span class="keyword">from</span> score <span class="keyword">where</span> student_id <span class="operator">=</span> old.id;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">old</span>;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line">$$ <span class="keyword">language</span> plpgsql;</span><br></pre></td></tr></table></figure>
+
+<p>开始构建触发器，在学生信息表删除时，执行前面声明的触发器函数</p>
+<p><img src="/./assets/20241011/014acdfd4b5d42b1b34049ca903befe2.png" alt="构建触发器"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> [ <span class="keyword">OR</span> REPLACE ] [ <span class="keyword">CONSTRAINT</span> ] <span class="keyword">TRIGGER</span> name &#123; BEFORE <span class="operator">|</span> AFTER <span class="operator">|</span> INSTEAD <span class="keyword">OF</span> &#125; &#123; event [ <span class="keyword">OR</span> ... ] &#125;</span><br><span class="line">    <span class="keyword">ON</span> table_name</span><br><span class="line">    [ <span class="keyword">FROM</span> referenced_table_name ]</span><br><span class="line">    [ <span class="keyword">NOT</span> DEFERRABLE <span class="operator">|</span> [ DEFERRABLE ] [ INITIALLY IMMEDIATE <span class="operator">|</span> INITIALLY DEFERRED ] ]</span><br><span class="line">    [ <span class="keyword">REFERENCING</span> &#123; &#123; <span class="keyword">OLD</span> <span class="operator">|</span> <span class="keyword">NEW</span> &#125; <span class="keyword">TABLE</span> [ <span class="keyword">AS</span> ] transition_relation_name &#125; [ ... ] ]</span><br><span class="line">    [ <span class="keyword">FOR</span> [ <span class="keyword">EACH</span> ] &#123; <span class="type">ROW</span> <span class="operator">|</span> STATEMENT &#125; ]</span><br><span class="line">    [ <span class="keyword">WHEN</span> ( <span class="keyword">condition</span> ) ]</span><br><span class="line">    <span class="keyword">EXECUTE</span> &#123; <span class="keyword">FUNCTION</span> <span class="operator">|</span> <span class="keyword">PROCEDURE</span> &#125; function_name ( arguments )</span><br><span class="line"></span><br><span class="line"><span class="keyword">where</span> event can be <span class="keyword">one</span> <span class="keyword">of</span>:</span><br><span class="line"></span><br><span class="line">    <span class="keyword">INSERT</span></span><br><span class="line">    <span class="keyword">UPDATE</span> [ <span class="keyword">OF</span> column_name [, ... ] ]</span><br><span class="line">    <span class="keyword">DELETE</span></span><br><span class="line">    <span class="keyword">TRUNCATE</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>当 <code>CONSTRAINT</code>选项被指定，这个命令会创建一个 <em>约束触发器</em> 。这和一个常规触发器相同，不过触发该触发器的时机可以使用<a target="_blank" rel="noopener" href="http://www.postgres.cn/docs/12/sql-set-constraints.html" title="SET CONSTRAINTS">SET CONSTRAINTS</a>调整。约束触发器必须是表上的 <code>AFTER ROW</code>触发器。它们可以在导致触发器事件的语句末尾被引发或者在包含该语句的事务末尾被引发。在后一种情况中，它们被称作是被 <em>延迟</em> 。一个待处理的延迟触发器的引发也可以使用 <code>SET CONSTRAINTS</code>立即强制发生。当约束触发器实现的约束被违背时，约束触发器应该抛出一个异常。</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 编写触发器，指定在删除某一行学生信息时，触发当前触发器，执行触发器函数</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">trigger</span> trigger_student </span><br><span class="line">after </span><br><span class="line"><span class="keyword">delete</span> </span><br><span class="line"><span class="keyword">on</span> student </span><br><span class="line"><span class="keyword">for</span> <span class="keyword">each</span> <span class="type">row</span> </span><br><span class="line"><span class="keyword">execute</span> <span class="keyword">function</span> trigger_function_delete_student_score();</span><br><span class="line"><span class="comment">-- 测试效果</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> score;</span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> student <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="表空间"><a href="#表空间" class="headerlink" title="表空间"></a>表空间</h1><p>在存储数据时，数据肯定要落到磁盘上，基于构建的tablespace，指定数据存放在磁盘上的物理地址。</p>
+<p>如果没有自己设计tablespace，PostgreSQL会自动指定一个位置作为默认的存储点。</p>
+<p>可以通过一个函数，查看表的物理数据存放在了哪个磁盘路径下。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询表存储的物理地址</span></span><br><span class="line"><span class="keyword">select</span> pg_relation_filepath(<span class="string">&#x27;student&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/./assets/20241011/56d9d4819d2a4fc4acb4016755a964aa.png" alt="表空间"></p>
+<p>这个位置是在$PG_DATA后的存放地址</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$PG_DATA <span class="operator">=</span><span class="operator">=</span> <span class="operator">/</span>var<span class="operator">/</span>lib<span class="operator">/</span>pgsql<span class="operator">/</span><span class="number">12</span><span class="operator">/</span>data<span class="operator">/</span></span><br></pre></td></tr></table></figure>
+
+<p>41000就是存储数据的物理文件</p>
+<p>构建表空间，指定数据存放位置</p>
+<p><img src="/./assets/20241011/135df3ee6c70451f9764918675e4dec8.png" alt="构建表空间"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- 构建表空间,构建表空间需要用户权限是超级管理员，其次需要指定的目录已经存在</span><br><span class="line">create tablespace tp_test location &#x27;/var/lib/pgsql/12/tp_test&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/./assets/20241011/705b0b089c254e179c2020484b414dbb.png" alt="构建表空间"></p>
+<p>构建数据库，以及表，指定到这个表空间中</p>
+<p><img src="/./assets/20241011/53e08b0b4e284a2eb021a0793aaf5b67.png" alt="构建数据库和表"></p>
+<p>其实指定表空间的存储位置后，PostgreSQL会在$PG_DATA目录下存储一份，同时在咱们构建tablespace时，指定的路径下也存储一份。</p>
+<p>这两个绝对路径下的文件都有存储表中的数据信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/var/lib/pgsql/12/data/pg_tblspc/41015/PG_12_201909212/41016/41020</span><br><span class="line">/var/lib/pgsql/12/lz_tp_test/PG_12_201909212/41016/41020</span><br></pre></td></tr></table></figure>
+
+<p>进一步会发现，其实在PostgreSQL的默认目录下，存储的是一个link，连接文件，类似一个快捷方式</p>
+<p><img src="/./assets/20241011/6b8050fb7bde425f99a9f9b7693c7216.png" alt="文件链接"></p>
+<h1 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h1><p>跟MySQL的没啥区别，把一些复杂的操作封装起来，还可以隐藏一些敏感数据。</p>
+<p>视图对于用户来说，就是一张真实的表，可以直接基于视图查询一张或者多张表的信息。</p>
+<p>视图对于开发来说，就是一条SQL语句。</p>
+<p><img src="/./assets/20241011/92ede98fe99b4d5680b5e5aab4cf1fc6.png" alt="创建视图语法"></p>
+<p>在PostgreSQL中，简单（单表）的视图是允许写操作的。</p>
+<p>但是强烈不推荐对视图进行写操作，虽然PostgreSQL默认允许（简单的视图）。</p>
+<p>写入的时候，其实修改的是表本身</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 构建一个简单视图</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">view</span> vw_score <span class="keyword">as</span> </span><br><span class="line">(<span class="keyword">select</span> id,math_score <span class="keyword">from</span> score);</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> vw_score;</span><br><span class="line"><span class="keyword">update</span> vw_score <span class="keyword">set</span> math_score <span class="operator">=</span> <span class="number">99</span> <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p>多表视图</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 复杂视图(两张表关联)</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">view</span> vw_student_score <span class="keyword">as</span> </span><br><span class="line">(<span class="keyword">select</span> stu.id <span class="keyword">as</span> id ,stu.name <span class="keyword">as</span> name ,score.math_score <span class="keyword">from</span> student stu,score score <span class="keyword">where</span> stu.id <span class="operator">=</span> score.student_id);</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> vw_student_score;</span><br><span class="line"></span><br><span class="line"><span class="keyword">update</span> vw_student_score <span class="keyword">set</span> math_score <span class="operator">=</span><span class="number">999</span> <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/./assets/20241011/77126d2759c04ce383e95d2c97f42021.png" alt="多表视图不许修改"></p>
+<h1 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>索引是数据库中快速查询数据的方法。</p>
+<p>索引能提升查询效率的同时，也会带来一些问题</p>
+<ul>
+<li>增加了存储空间；</li>
+<li>写操作时，花费的时间比较多。</li>
+</ul>
+<p>索引可以提升效率，甚至还可以给字段做一些约束</p>
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><ul>
+<li>B-Tree索引：最常用的索引；</li>
+<li>Hash索引：跟MySQL类似，做等值判断；</li>
+<li>GIN索引：针对字段的多个值的类型，比如数组类型。</li>
+</ul>
+<h2 id="创建索引看效果"><a href="#创建索引看效果" class="headerlink" title="创建索引看效果"></a>创建索引看效果</h2><p><img src="/./assets/20241011/c66251ffd1ff44e6afa963c371214790.png" alt="索引创建语法"></p>
+<p>准备大量测试数据，方便查看索引效果</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 测试索引效果</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> tb_index(</span><br><span class="line">    id bigserial <span class="keyword">primary</span> key,</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">64</span>),</span><br><span class="line">    phone <span class="type">varchar</span>(<span class="number">64</span>)[]</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 添加300W条数据测试效果</span></span><br><span class="line">do $$</span><br><span class="line"><span class="keyword">declare</span></span><br><span class="line">    i <span class="type">int</span> :<span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    while i <span class="operator">&lt;</span> <span class="number">3000000</span> loop</span><br><span class="line">        i <span class="operator">=</span> i <span class="operator">+</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">insert</span> <span class="keyword">into</span></span><br><span class="line">            tb_index</span><br><span class="line">        (name,phone) </span><br><span class="line">            <span class="keyword">values</span></span><br><span class="line">        (md5(random()::text <span class="operator">||</span> <span class="built_in">current_timestamp</span>::text)::uuid,<span class="keyword">array</span>[random()::<span class="type">varchar</span>(<span class="number">64</span>),random()::<span class="type">varchar</span>(<span class="number">64</span>)]);</span><br><span class="line">    <span class="keyword">end</span> loop;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line">$$ <span class="keyword">language</span> plpgsql;</span><br></pre></td></tr></table></figure>
+
+<p>在没有索引的情况下，先基于name做等值查询，看时间，同时看执行计划</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- c0064192-1836-b019-c649-b368c2be31ca</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_index <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">2222222</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_index <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;c0064192-1836-b019-c649-b368c2be31ca&#x27;</span>;</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_index <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;c0064192-1836-b019-c649-b368c2be31ca&#x27;</span>;</span><br><span class="line"><span class="comment">-- Seq Scan  这个代表全表扫描</span></span><br><span class="line"><span class="comment">-- 时间大致0.3秒左右</span></span><br></pre></td></tr></table></figure>
+
+<p>在有索引的情况下，再基于name做等值查询，看时间，同时看执行计划</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- name字段构建索引（默认就是b-tree）</span></span><br><span class="line"><span class="keyword">create</span> index index_tb_index_name <span class="keyword">on</span> tb_index(name);</span><br><span class="line"><span class="comment">-- 测试效果</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_index <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;c0064192-1836-b019-c649-b368c2be31ca&#x27;</span>;</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_index <span class="keyword">where</span> name <span class="operator">=</span> <span class="string">&#x27;c0064192-1836-b019-c649-b368c2be31ca&#x27;</span>;</span><br><span class="line"><span class="comment">-- Index Scan 使用索引</span></span><br><span class="line"><span class="comment">-- 0.1s左右</span></span><br></pre></td></tr></table></figure>
+
+<p>测试GIN索引效果：</p>
+<ul>
+<li>在没有索引的情况下，基于phone字段做包含查询</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- phone：&#123;0.6925242730781953,0.8569644964711074&#125;</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_index <span class="keyword">where</span> phone @<span class="operator">&gt;</span> <span class="keyword">array</span>[<span class="string">&#x27;0.6925242730781953&#x27;</span>::<span class="type">varchar</span>(<span class="number">64</span>)];</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_index <span class="keyword">where</span> phone @<span class="operator">&gt;</span> <span class="keyword">array</span>[<span class="string">&#x27;0.6925242730781953&#x27;</span>::<span class="type">varchar</span>(<span class="number">64</span>)];</span><br><span class="line"><span class="comment">-- Seq Scan 全表扫描</span></span><br><span class="line"><span class="comment">-- 0.5s左右</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>给phone字段构建GIN索引，在查询</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 给phone字符串数组类型字段构建一个GIN索引</span></span><br><span class="line"><span class="keyword">create</span> index index_tb_index_phone_gin <span class="keyword">on</span> tb_index <span class="keyword">using</span> gin(phone);</span><br><span class="line"><span class="comment">-- 查询</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_index <span class="keyword">where</span> phone @<span class="operator">&gt;</span> <span class="keyword">array</span>[<span class="string">&#x27;0.6925242730781953&#x27;</span>::<span class="type">varchar</span>(<span class="number">64</span>)];</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_index <span class="keyword">where</span> phone @<span class="operator">&gt;</span> <span class="keyword">array</span>[<span class="string">&#x27;0.6925242730781953&#x27;</span>::<span class="type">varchar</span>(<span class="number">64</span>)];</span><br><span class="line"><span class="comment">-- Bitmap Index 位图扫描</span></span><br><span class="line"><span class="comment">-- 0.1s以内完成</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="物化视图"><a href="#物化视图" class="headerlink" title="物化视图"></a>物化视图</h1><p>前面说过普通视图，本质就是一个SQL语句，普通的视图并不会本地磁盘存储任何物理。 但是每次查询视图都是执行这个SQL。效率有点问题。</p>
+<p>物化视图从名字上就可以看出来，必然是要持久化一份数据的，使用方法和视图基本一致。查询物化视图，就相当于查询一张单独的表。相比之前的普通视图，物化视图就不需要每次都查询复杂SQL，每次查询的都是真实的物理存储地址中的一份数据（表）。</p>
+<p>物化视图因为会持久化到本地，完全脱离原来的表结构。 而且物化视图是可以单独设置索引等信息来提升物化视图的查询效率。</p>
+<p>但是物化视图更新时间不太好把控。如果更新频繁，对数据库压力也不小。如果更新不频繁，会造成数据存在延迟问题，实时性就不好。</p>
+<p>如果要更新物化视图，可以采用触发器的形式，当原表中的数据被写后，可以通过触发器执行同步物化视图的操作。或者基于定时任务去完成物化视图的数据同步。</p>
+<p><img src="/./assets/20241011/15db0ad80b9247069b709f12b1fe0901.png" alt="物化视图创建语法"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 构建物化视图</span></span><br><span class="line"><span class="keyword">create</span> materialized <span class="keyword">view</span> mv_test <span class="keyword">as</span> (<span class="keyword">select</span> id,name,price <span class="keyword">from</span> test);</span><br><span class="line"><span class="comment">-- 操作物化视图和操作表的方式没啥区别。</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> mv_test;</span><br><span class="line"><span class="comment">-- 操作原表时，对物化视图没任何影响</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test <span class="keyword">values</span> (<span class="number">4</span>,<span class="string">&#x27;月饼&#x27;</span>,<span class="number">50</span>,<span class="number">10</span>);</span><br><span class="line"><span class="comment">-- 物化视图的添加操作(不允许写物化视图)，会报错</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> mv_test <span class="keyword">values</span> (<span class="number">5</span>,<span class="string">&#x27;大阅兵&#x27;</span>,<span class="number">66</span>);</span><br></pre></td></tr></table></figure>
+
+<p>物化视图如何从原表中进行同步操作？ PostgreSQL中，对物化视图的同步，提供了两种方式，一种是全量更新，另一种是增量更新。</p>
+<p>全量更新语法：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询原来物化视图的数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> mv_test;</span><br><span class="line"><span class="comment">-- 全量更新物化视图</span></span><br><span class="line">refresh materialized <span class="keyword">view</span> mv_test;</span><br><span class="line"><span class="comment">-- 再次查询物化视图的数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> mv_test;</span><br></pre></td></tr></table></figure>
+
+<p>增量更新，增量更新需要一个唯一标识，来判断哪些是增量，同时也会有行数据的版本号约束。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询原来物化视图的数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> mv_test;</span><br><span class="line"><span class="comment">-- 增量更新物化视图，因为物化视图没有唯一索引，无法判断出哪些是增量数据</span></span><br><span class="line">refresh materialized <span class="keyword">view</span> concurrently mv_test;</span><br><span class="line"><span class="comment">-- 给物化视图添加唯一索引。</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> index index_mv_test <span class="keyword">on</span> mv_test(id);</span><br><span class="line"><span class="comment">-- 增量更新物化视图</span></span><br><span class="line">refresh materialized <span class="keyword">view</span> concurrently mv_test;</span><br><span class="line"><span class="comment">-- 再次查询物化视图的数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> mv_test;</span><br><span class="line"><span class="comment">-- 增量更新时，即便是修改数据，物化视图的同步，也会根据一个xmin和xmax的字段做正常的数据同步</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">update</span> test <span class="keyword">set</span> name <span class="operator">=</span> <span class="string">&#x27;汤圆&#x27;</span> <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">5</span>;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test <span class="keyword">values</span> (<span class="number">5</span>,<span class="string">&#x27;猪头肉&#x27;</span>,<span class="number">99</span>,<span class="number">40</span>);</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> test;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PostgreSQL/" rel="tag"># PostgreSQL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/10/11/20241011-03.html" rel="prev" title="PostgreSQL基本操作和数据类型">
+                  <i class="fa fa-angle-left"></i> PostgreSQL基本操作和数据类型
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/10/11/20241011-05.html" rel="next" title="PostgreSQL事务">
+                  PostgreSQL事务 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Oliver King</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
