@@ -19,31 +19,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.oliver.ren","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="计算机系统的组成 硬件（裸机） 操作系统（OS） 应用程序 用户   操作系统和应用程序统称为软件，系统软件主要包括：  操作系统 语言处理程序 数据库管理系统 分布式软件系统 网络软件系统 各种服务软件  计算机硬件的发展 电子管时代（1946-1959） 晶体管时代（1959-1964） 中小规模集成电路时代（1964-1975） 超大规模集成电路时代（1975-1990） 超级规模集成电路时">
+    <meta name="description" content="数据库就是一个存储数据的仓库，数据库是以一定方式存储在一起，能与多个用户共享，具有尽可能小的冗余，与应用程序彼此独立的数据集合。 关系型数据库关系型数据库，存储的格式可以直观地反映实体间的关系，和常见的表格比较相似； 关系型数据库中表与表之间有很多复杂的关联关系的； 常见的关系型数据库有MySQL, Orcale, PostgreSQL, SQL Server等。 非关系型数据库随着近些年技术方向">
 <meta property="og:type" content="article">
-<meta property="og:title" content="计算机的发展历程">
-<meta property="og:url" content="https://www.oliver.ren/2024/09/19/20240919-02.html">
+<meta property="og:title" content="SQL注入之数据库概述">
+<meta property="og:url" content="https://www.oliver.ren/2025/02/27/20250227-02.html">
 <meta property="og:site_name" content="Oliver&#39;s Blog">
-<meta property="og:description" content="计算机系统的组成 硬件（裸机） 操作系统（OS） 应用程序 用户   操作系统和应用程序统称为软件，系统软件主要包括：  操作系统 语言处理程序 数据库管理系统 分布式软件系统 网络软件系统 各种服务软件  计算机硬件的发展 电子管时代（1946-1959） 晶体管时代（1959-1964） 中小规模集成电路时代（1964-1975） 超大规模集成电路时代（1975-1990） 超级规模集成电路时">
+<meta property="og:description" content="数据库就是一个存储数据的仓库，数据库是以一定方式存储在一起，能与多个用户共享，具有尽可能小的冗余，与应用程序彼此独立的数据集合。 关系型数据库关系型数据库，存储的格式可以直观地反映实体间的关系，和常见的表格比较相似； 关系型数据库中表与表之间有很多复杂的关联关系的； 常见的关系型数据库有MySQL, Orcale, PostgreSQL, SQL Server等。 非关系型数据库随着近些年技术方向">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.oliver.ren/assets/20240919/7ac4874c03f64de9ba65a042d2947a76.png">
-<meta property="og:image" content="https://www.oliver.ren/assets/20240919/be2eb7263f694464946d4ee5a97752d6.png">
-<meta property="article:published_time" content="2024-09-19T10:27:49.000Z">
-<meta property="article:modified_time" content="2025-02-27T11:22:44.045Z">
+<meta property="og:image" content="https://www.oliver.ren/assets/20250227/c5ad3c29d3a44944be62c8134dfbdc6d.png">
+<meta property="article:published_time" content="2025-02-27T12:11:19.000Z">
+<meta property="article:modified_time" content="2025-02-27T12:18:56.953Z">
 <meta property="article:author" content="Oliver King">
-<meta property="article:tag" content="计算机组成原理">
+<meta property="article:tag" content="SQL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://www.oliver.ren/assets/20240919/7ac4874c03f64de9ba65a042d2947a76.png">
+<meta name="twitter:image" content="https://www.oliver.ren/assets/20250227/c5ad3c29d3a44944be62c8134dfbdc6d.png">
 
 
-<link rel="canonical" href="https://www.oliver.ren/2024/09/19/20240919-02.html">
+<link rel="canonical" href="https://www.oliver.ren/2025/02/27/20250227-02.html">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.oliver.ren/2024/09/19/20240919-02.html","path":"2024/09/19/20240919-02.html","title":"计算机的发展历程"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.oliver.ren/2025/02/27/20250227-02.html","path":"2025/02/27/20250227-02.html","title":"SQL注入之数据库概述"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>计算机的发展历程 | Oliver's Blog</title>
+<title>SQL注入之数据库概述 | Oliver's Blog</title>
   
 
 
@@ -143,7 +142,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%BB%84%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">计算机系统的组成</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A1%AC%E4%BB%B6%E7%9A%84%E5%8F%91%E5%B1%95"><span class="nav-number">2.</span> <span class="nav-text">计算机硬件的发展</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.</span> <span class="nav-text">关系型数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">非关系型数据库</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -188,7 +187,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/09/19/20240919-02.html">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2025/02/27/20250227-02.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -201,12 +200,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="计算机的发展历程 | Oliver's Blog">
+      <meta itemprop="name" content="SQL注入之数据库概述 | Oliver's Blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          计算机的发展历程
+          SQL注入之数据库概述
         </h1>
 
         <div class="post-meta-container">
@@ -216,15 +215,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2024-09-19 18:27:49" itemprop="dateCreated datePublished" datetime="2024-09-19T18:27:49+08:00">2024-09-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-02-27 19:22:44" itemprop="dateModified" datetime="2025-02-27T19:22:44+08:00">2025-02-27</time>
+      <time title="创建时间：2025-02-27 20:11:19 / 修改时间：20:18:56" itemprop="dateCreated datePublished" datetime="2025-02-27T20:11:19+08:00">2025-02-27</time>
     </span>
 
   
@@ -236,31 +229,14 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="计算机系统的组成"><a href="#计算机系统的组成" class="headerlink" title="计算机系统的组成"></a>计算机系统的组成</h1><ul>
-<li>硬件（裸机）</li>
-<li>操作系统（OS）</li>
-<li>应用程序</li>
-<li>用户</li>
-</ul>
-<p><img src="/./assets/20240919/7ac4874c03f64de9ba65a042d2947a76.png" alt="计算机系统"></p>
-<p>操作系统和应用程序统称为软件，系统软件主要包括：</p>
-<ul>
-<li>操作系统</li>
-<li>语言处理程序</li>
-<li>数据库管理系统</li>
-<li>分布式软件系统</li>
-<li>网络软件系统</li>
-<li>各种服务软件</li>
-</ul>
-<h1 id="计算机硬件的发展"><a href="#计算机硬件的发展" class="headerlink" title="计算机硬件的发展"></a>计算机硬件的发展</h1><ol>
-<li>电子管时代（1946-1959）</li>
-<li>晶体管时代（1959-1964）</li>
-<li>中小规模集成电路时代（1964-1975）</li>
-<li>超大规模集成电路时代（1975-1990）</li>
-<li>超级规模集成电路时代（1990-现在）</li>
-</ol>
-<p>1946年02月15日，诞生了第一台计算机，称为：ENIAC（Electronic Numerical Integrator and Computer）。</p>
-<p><img src="/./assets/20240919/be2eb7263f694464946d4ee5a97752d6.png" alt="ENIAC"></p>
+    <div class="post-body" itemprop="articleBody"><p>数据库就是一个存储数据的仓库，数据库是以一定方式存储在一起，能与多个用户共享，具有尽可能小的冗余，与应用程序彼此独立的数据集合。</p>
+<h1 id="关系型数据库"><a href="#关系型数据库" class="headerlink" title="关系型数据库"></a>关系型数据库</h1><p>关系型数据库，存储的格式可以直观地反映实体间的关系，和常见的表格比较相似；</p>
+<p>关系型数据库中表与表之间有很多复杂的关联关系的；</p>
+<p>常见的关系型数据库有MySQL, Orcale, PostgreSQL, SQL Server等。</p>
+<h1 id="非关系型数据库"><a href="#非关系型数据库" class="headerlink" title="非关系型数据库"></a>非关系型数据库</h1><p>随着近些年技术方向的不断扩展，大量的NoSQL数据库如MongoDB，Redis出于简化数据库结构，避免冗余，影响性能的表连接，摒弃复杂分布式的目的被设计。</p>
+<p>NoSQL数据库适合追求速度和可扩展性，业务多变的场景。</p>
+<p><a target="_blank" rel="noopener" href="https://db-engines.com/en/ranking">数据库排行榜</a></p>
+<p><img src="/./assets/20250227/c5ad3c29d3a44944be62c8134dfbdc6d.png" alt="数据库排行榜"></p>
 
     </div>
 
@@ -270,21 +246,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" rel="tag"># 计算机组成原理</a>
+              <a href="/tags/SQL/" rel="tag"># SQL</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/09/19/20240919-01.html" rel="prev" title="计算机组成原理">
-                  <i class="fa fa-angle-left"></i> 计算机组成原理
+                <a href="/2025/02/27/20250227-01.html" rel="prev" title="SQL注入概述">
+                  <i class="fa fa-angle-left"></i> SQL注入概述
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/09/19/20240919-03.html" rel="next" title="计算机软件的发展">
-                  计算机软件的发展 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>

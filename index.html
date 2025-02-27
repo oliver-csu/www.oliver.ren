@@ -149,7 +149,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -171,6 +171,83 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2025/02/27/20250227-02.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Oliver King">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oliver's Blog">
+      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Oliver's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/02/27/20250227-02.html" class="post-title-link" itemprop="url">SQL注入之数据库概述</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-02-27 20:11:19 / 修改时间：20:18:56" itemprop="dateCreated datePublished" datetime="2025-02-27T20:11:19+08:00">2025-02-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>数据库就是一个存储数据的仓库，数据库是以一定方式存储在一起，能与多个用户共享，具有尽可能小的冗余，与应用程序彼此独立的数据集合。</p>
+<h1 id="关系型数据库"><a href="#关系型数据库" class="headerlink" title="关系型数据库"></a>关系型数据库</h1><p>关系型数据库，存储的格式可以直观地反映实体间的关系，和常见的表格比较相似；</p>
+<p>关系型数据库中表与表之间有很多复杂的关联关系的；</p>
+<p>常见的关系型数据库有MySQL, Orcale, PostgreSQL, SQL Server等。</p>
+<h1 id="非关系型数据库"><a href="#非关系型数据库" class="headerlink" title="非关系型数据库"></a>非关系型数据库</h1><p>随着近些年技术方向的不断扩展，大量的NoSQL数据库如MongoDB，Redis出于简化数据库结构，避免冗余，影响性能的表连接，摒弃复杂分布式的目的被设计。</p>
+<p>NoSQL数据库适合追求速度和可扩展性，业务多变的场景。</p>
+<p><a target="_blank" rel="noopener" href="https://db-engines.com/en/ranking">数据库排行榜</a></p>
+<p><img src="/./assets/20250227/c5ad3c29d3a44944be62c8134dfbdc6d.png" alt="数据库排行榜"></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1477,361 +1554,6 @@
 
 <p>增量更新，增量更新需要一个唯一标识，来判断哪些是增量，同时也会有行数据的版本号约束。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查询原来物化视图的数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> mv_test;</span><br><span class="line"><span class="comment">-- 增量更新物化视图，因为物化视图没有唯一索引，无法判断出哪些是增量数据</span></span><br><span class="line">refresh materialized <span class="keyword">view</span> concurrently mv_test;</span><br><span class="line"><span class="comment">-- 给物化视图添加唯一索引。</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> index index_mv_test <span class="keyword">on</span> mv_test(id);</span><br><span class="line"><span class="comment">-- 增量更新物化视图</span></span><br><span class="line">refresh materialized <span class="keyword">view</span> concurrently mv_test;</span><br><span class="line"><span class="comment">-- 再次查询物化视图的数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> mv_test;</span><br><span class="line"><span class="comment">-- 增量更新时，即便是修改数据，物化视图的同步，也会根据一个xmin和xmax的字段做正常的数据同步</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">update</span> test <span class="keyword">set</span> name <span class="operator">=</span> <span class="string">&#x27;汤圆&#x27;</span> <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">5</span>;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test <span class="keyword">values</span> (<span class="number">5</span>,<span class="string">&#x27;猪头肉&#x27;</span>,<span class="number">99</span>,<span class="number">40</span>);</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> test;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/11/20241011-03.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Oliver King">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Oliver's Blog">
-      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Oliver's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/11/20241011-03.html" class="post-title-link" itemprop="url">PostgreSQL基本操作和数据类型</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-10-11 14:17:29" itemprop="dateCreated datePublished" datetime="2024-10-11T14:17:29+08:00">2024-10-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-02-27 19:22:44" itemprop="dateModified" datetime="2025-02-27T19:22:44+08:00">2025-02-27</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="单引号和双引号"><a href="#单引号和双引号" class="headerlink" title="单引号和双引号"></a>单引号和双引号</h1><p>在PostgreSQL中，写SQL语句时：</p>
-<ul>
-<li>单引号用来标识实际的值；</li>
-<li>双引号用来标识一个关键字，比如表名，字段名。</li>
-</ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 单引号写具体的值，双引号类似MySQL的``标记，用来填充关键字</span></span><br><span class="line"><span class="comment">-- 下面的葡萄牙会报错，因为葡萄牙不是关键字</span></span><br><span class="line"><span class="keyword">select</span> <span class="number">1.414</span>,<span class="string">&#x27;卡塔尔&#x27;</span>,&quot;葡萄牙&quot;;</span><br></pre></td></tr></table></figure>
-
-<h1 id="数据类型转换"><a href="#数据类型转换" class="headerlink" title="数据类型转换"></a>数据类型转换</h1><p>第一种方式：只需要在值的前面，添加上具体的数据类型即可</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 将字符串转成位图类型</span></span><br><span class="line"><span class="keyword">select</span> bit <span class="string">&#x27;010101010101001&#x27;</span>;</span><br></pre></td></tr></table></figure>
-
-<p>第二种方式：也可以在具体值的后面，添加上 ::类型，来指定</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 数据类型</span></span><br><span class="line"><span class="keyword">select</span> <span class="string">&#x27;2011-11-11&#x27;</span>::<span class="type">date</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="string">&#x27;101010101001&#x27;</span>::bit(<span class="number">20</span>);</span><br><span class="line"><span class="keyword">select</span> <span class="string">&#x27;13&#x27;</span>::<span class="type">int</span>;</span><br></pre></td></tr></table></figure>
-
-<p>第三种方式：使用CAST函数</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 类型转换的完整写法</span></span><br><span class="line"><span class="keyword">select</span> <span class="built_in">CAST</span>(<span class="type">varchar</span> <span class="string">&#x27;100&#x27;</span> <span class="keyword">as</span> <span class="type">int</span>);</span><br></pre></td></tr></table></figure>
-
-<h1 id="布尔类型"><a href="#布尔类型" class="headerlink" title="布尔类型"></a>布尔类型</h1><p>布尔类型可以存储三个值，true，false，null</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 布尔类型的约束没有那么强，true，false大小写随意，他会给你转，同时yes，no这种他也认识，但是需要转换</span></span><br><span class="line"><span class="keyword">select</span> <span class="literal">true</span>,<span class="literal">false</span>,<span class="string">&#x27;yes&#x27;</span>::<span class="type">boolean</span>,<span class="type">boolean</span> <span class="string">&#x27;no&#x27;</span>,<span class="literal">True</span>,<span class="literal">FaLse</span>,<span class="keyword">NULL</span>::<span class="type">boolean</span>;</span><br></pre></td></tr></table></figure>
-
-<p>boolean类型在做and和or的逻辑操作时的结果：</p>
-<table>
-<thead>
-<tr>
-<th>字段A</th>
-<th>字段B</th>
-<th>a and b</th>
-<th>a or b</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>true</td>
-<td>true</td>
-<td>true</td>
-<td>true</td>
-</tr>
-<tr>
-<td>true</td>
-<td>false</td>
-<td>false</td>
-<td>true</td>
-</tr>
-<tr>
-<td>true</td>
-<td>NULL</td>
-<td>NULL</td>
-<td>true</td>
-</tr>
-<tr>
-<td>false</td>
-<td>false</td>
-<td>false</td>
-<td>false</td>
-</tr>
-<tr>
-<td>false</td>
-<td>NULL</td>
-<td>false</td>
-<td>NULL</td>
-</tr>
-<tr>
-<td>NULL</td>
-<td>NULL</td>
-<td>NULL</td>
-<td>NULL</td>
-</tr>
-</tbody></table>
-<h1 id="数值类型"><a href="#数值类型" class="headerlink" title="数值类型"></a>数值类型</h1><h2 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h2><p>整型比较简单，主要就是三个：</p>
-<ul>
-<li>smallint、int2：2字节</li>
-<li>integer、int、int4：4字节</li>
-<li>bigint、int8：8字节</li>
-</ul>
-<p>使用策略如下：</p>
-<ul>
-<li>正常就用integer；</li>
-<li>如果要存主键，比如雪花算法，那就bigint；</li>
-<li>要节约空间，就用smallint。</li>
-</ul>
-<h2 id="浮点型"><a href="#浮点型" class="headerlink" title="浮点型"></a>浮点型</h2><p>浮点类型就关注两个（其实是一个）</p>
-<ul>
-<li>decimal(n,m)：本质就是numeric，PostgreSQL会帮转换；</li>
-<li>numeric(n,m)：PostgreSQL本质的浮点类型。</li>
-</ul>
-<p>针对浮点类型的数据，使用numeric即可。</p>
-<h2 id="序列"><a href="#序列" class="headerlink" title="序列"></a>序列</h2><p>MySQL中的主键自增，是基于auto_increment去实现，没有序列的对象。</p>
-<p>PostgreSQL和Oracle十分相似，支持序列：sequence，没有auto_increment。</p>
-<p>序列的正常构建方式：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> sequence schema_oliver.table_id_seq;</span><br><span class="line"><span class="comment">-- 查询下一个值</span></span><br><span class="line"><span class="keyword">select</span> nextval(<span class="string">&#x27;schema_oliver.table_id_seq&#x27;</span>);</span><br><span class="line"><span class="comment">-- 查询当前值</span></span><br><span class="line"><span class="keyword">select</span> currval(<span class="string">&#x27;schema_oliver.table_id_seq&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>注意：</p>
-<ul>
-<li>默认情况下，seqeunce的起始值是0，每次nextval递增1，最大值9223372036854775807；</li>
-<li>告诉缓存，插入的数据比较多，可以指定告诉缓存，一次性计算出20个后续的值，nextval时，就不可以不去计算，直接去高速缓存拿值，效率会有一内内的提升；</li>
-<li>序列大多数的应用，是用作表的主键自增效果。</li>
-</ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 表自增</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> schema_oliver.xxx(</span><br><span class="line">    id int8 <span class="keyword">default</span> nextval(<span class="string">&#x27;schema_oliver.table_id_seq&#x27;</span>),</span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">16</span>)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> schema_oliver.xxx (name) <span class="keyword">values</span> (<span class="string">&#x27;xxx&#x27;</span>);</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> schema_oliver.xxx;</span><br></pre></td></tr></table></figure>
-
-<p>上面这种写法没有问题，但是很麻烦。</p>
-<p>PostgreSQL提供了序列的数据类型，可以在声明表结构时，直接指定序列的类型即可。</p>
-<p>bigserial相当于是bigint类型设置了序列实现自增。</p>
-<p>类型对应如下：</p>
-<ul>
-<li>smallserial对应smallint；</li>
-<li>serial对应int；</li>
-<li>bigserial对应bigint。</li>
-</ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 表自增</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> schema_oliver.yyy(</span><br><span class="line">    id bigserial,   </span><br><span class="line">    name <span class="type">varchar</span>(<span class="number">16</span>)</span><br><span class="line">);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> schema_oliver.yyy (name) <span class="keyword">values</span> (<span class="string">&#x27;yyy&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>注意：</p>
-<ul>
-<li>在drop表之后，序列不会被删除，但是序列会变为不可用的状态。 因为序列在使用serial去构建时，会绑定到指定表的指定列上。</li>
-<li>如果是单独构建序列，再构建表，使用传统方式实现，序列和表就是相对独立的。</li>
-</ul>
-<h2 id="数值的常见操作"><a href="#数值的常见操作" class="headerlink" title="数值的常见操作"></a>数值的常见操作</h2><p>针对数值可以实现加减乘除取余这5个操作</p>
-<p>还有其他的操作方式</p>
-<table>
-<thead>
-<tr>
-<th>操作符</th>
-<th>描述</th>
-<th>示例</th>
-<th>结果</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>^</td>
-<td>幂</td>
-<td>2 ^ 3</td>
-<td>8</td>
-</tr>
-<tr>
-<td>|&#x2F;</td>
-<td>平方根</td>
-<td>|&#x2F; 36</td>
-<td>6</td>
-</tr>
-<tr>
-<td>@</td>
-<td>绝对值</td>
-<td>@ -5</td>
-<td>5</td>
-</tr>
-<tr>
-<td>&amp;</td>
-<td>与</td>
-<td>31 &amp; 16</td>
-<td>16</td>
-</tr>
-<tr>
-<td>|</td>
-<td>或</td>
-<td>31|32</td>
-<td>63</td>
-</tr>
-<tr>
-<td>&lt;&lt;</td>
-<td>左移</td>
-<td>1&lt;&lt;1</td>
-<td>2</td>
-</tr>
-<tr>
-<td>&gt;&gt;</td>
-<td>右移</td>
-<td>16&gt;&gt;1</td>
-<td>8</td>
-</tr>
-</tbody></table>
-<p>数值操作也提供了一些函数，比如pi()，round(数值, 位数)，floor()，ceil()</p>
-<h1 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h1><p>字符串类型用的是最多的一种，在PostgreSQL里，主要支持三种：</p>
-<ul>
-<li>character（就是MySQL的char类型），定长字符串。（最大可以存储1G）</li>
-<li>character varying（varchar），可变长度的字符串。（最大可以存储1G）</li>
-<li>text（跟MySQL一样）长度特别长的字符串。</li>
-</ul>
-<p>注意： 字符串的拼接一要要使用||来拼接。</p>
-<p>其他的函数，可以查看：<a target="_blank" rel="noopener" href="http://www.postgres.cn/docs/12/functions-string.html">http://www.postgres.cn/docs/12/functions-string.html</a></p>
-<h1 id="日期类型"><a href="#日期类型" class="headerlink" title="日期类型"></a>日期类型</h1><p>在PostgreSQL中，核心的时间类型，就三个。</p>
-<ul>
-<li>timestamp（时间戳，年月日时分秒）</li>
-<li>date（年月日）</li>
-<li>time（时分秒）</li>
-</ul>
-<p>在PostgreSQL中，声明时间的方式。</p>
-<p>只需要使用字符串正常的编写 yyyy-MM-dd HH:mm:ss 就可以转换为时间类型。</p>
-<p>直接在字符串位置使用之前讲到的数据类型转换就可以了。</p>
-<p>当前系统时间：</p>
-<ul>
-<li>可以使用now作为当前系统时间（没有时区的概念）<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">select timestamp &#x27;now&#x27;;</span><br><span class="line">-- 直接查询now，没有时区的概念</span><br><span class="line">select time with time zone &#x27;now&#x27; at time zone &#x27;08:00:00&#x27;</span><br></pre></td></tr></table></figure></li>
-<li>也可以使用current_timestamp的方式获取（推荐，默认东八区）</li>
-</ul>
-<p>日期类型的运算：</p>
-<ul>
-<li>正常对date类型做+，-操作，默认单位是天</li>
-<li>date + time &#x3D; timestamp~~~<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select date &#x27;2011-11-11&#x27; + time &#x27;12:12:12&#x27; ;</span><br></pre></td></tr></table></figure></li>
-<li>可以针对timestamp使用interval的方式进行 +,- 操作，在查询以时间范围为条件的内容时，可以使用<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select timestamp &#x27;2011-11-11 12:12:12&#x27; + interval &#x27;1day&#x27; + interval &#x27;1minute&#x27; + interval &#x27;1month&#x27;;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h1 id="枚举类型"><a href="#枚举类型" class="headerlink" title="枚举类型"></a>枚举类型</h1><p>枚举类型MySQL也支持，只是没使用，PostgreSQL同样支持这种数据类型</p>
-<p>可以声明枚举类型作为表中的字段类型，这样可以无形的给表字段追加规范。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 声明一个星期的枚举，值自然只有周一~周日。</span></span><br><span class="line"><span class="keyword">create</span> type week <span class="keyword">as</span> enum (<span class="string">&#x27;Mon&#x27;</span>,<span class="string">&#x27;Tues&#x27;</span>,<span class="string">&#x27;Sun&#x27;</span>);</span><br><span class="line"><span class="comment">-- 声明一张表，表中的某个字段的类型是上面声明的枚举。</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> test;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test(</span><br><span class="line">    id bigserial ,</span><br><span class="line">    weekday week</span><br><span class="line">);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test (weekday) <span class="keyword">values</span> (<span class="string">&#x27;Mon&#x27;</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test (weekday) <span class="keyword">values</span> (<span class="string">&#x27;Fri&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
-<p><img src="/./assets/20241011/c9f7bbd91c034952992f81aa701f8d98.png" alt="枚举异常"></p>
-<h1 id="IP类型"><a href="#IP类型" class="headerlink" title="IP类型"></a>IP类型</h1><p>PostgreSQL支持IP类型的存储，支持IPv4，IPv6，甚至MAC地址类型也支持。</p>
-<p>IP类型，可以在存储IP时，帮助做校验，其次也可以针对IP做范围查找。</p>
-<p>IP校验：</p>
-<p><img src="/./assets/20241011/afe45596b7f1417fb87f76510ec6d175.png" alt="IP校验"></p>
-<p>IP范围查找：</p>
-<p><img src="/./assets/20241011/d8873d97b4ec4123b5c27a4dd57371bb.png" alt="IP范围查找"></p>
-<h1 id="JSON-JSONB类型"><a href="#JSON-JSONB类型" class="headerlink" title="JSON&amp;JSONB类型"></a>JSON&amp;JSONB类型</h1><p>JSON在MySQL8.x中也做了支持，但是MySQL支持的不好，因为JSON类型做查询时，基本无法给JSON字段做索引。</p>
-<p>PostgreSQL支持JSON类型以及JSONB类型，JSON和JSONB的使用基本没区别。</p>
-<p>抛开JSON类型，本质上JSON格式就是一个字符串，比如MySQL5.7不支持JSON的情况的下，使用text也可以，但是字符串类型无法校验JSON的格式，单独的字符串也没有办法只获取JSON中某个key对应的value。</p>
-<p>JSON和JSONB的区别：</p>
-<ul>
-<li>JSON类型无法构建索引，JSONB类型可以创建索引；</li>
-<li>JSON类型的数据中多余的空格会被存储下来，JSONB会自动取消多余的空格；</li>
-<li>JSON类型甚至可以存储重复的key，JSONB不会保留多余的重复key（只保留最后一个）；</li>
-<li>JSON会保留存储时key的顺序，JSONB不会保留原有顺序。</li>
-</ul>
-<p>JSON中key对应的value的数据类型</p>
-<table>
-<thead>
-<tr>
-<th>JSON</th>
-<th>PostgreSQL</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>String</td>
-<td>text</td>
-</tr>
-<tr>
-<td>number</td>
-<td>numeric</td>
-</tr>
-<tr>
-<td>boolean</td>
-<td>boolean</td>
-</tr>
-<tr>
-<td>null</td>
-<td>(none)</td>
-</tr>
-</tbody></table>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;张三&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#123;</span><span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;info&quot;</span><span class="punctuation">:</span> <span class="string">&quot;xxx&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
-
-<p>操作JSON：</p>
-<ul>
-<li>上述的四种JSON存储的类型：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select &#x27;9&#x27;::JSON,&#x27;null&#x27;::JSON,&#x27;&quot;oliver&quot;&#x27;::JSON,&#x27;true&#x27;::json;</span><br><span class="line">select &#x27;9&#x27;::JSONB,&#x27;null&#x27;::JSONB,&#x27;&quot;oliver&quot;&#x27;::JSONB,&#x27;true&#x27;::JSONB;</span><br></pre></td></tr></table></figure></li>
-<li>JSON数组<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select &#x27;[9,true,null,&quot;我是字符串&quot;]&#x27;::JSON;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p><img src="/./assets/20241011/d9e02e3db28c45dfb6916a12a74229d0.png" alt="JSON对象"></p>
-<ul>
-<li>JSON对象<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select &#x27;&#123;&quot;name&quot;: &quot;张三&quot;,&quot;age&quot;: 23,&quot;birthday&quot;: &quot;2011-11-11&quot;,&quot;gender&quot;: null&#125;&#x27;::json;</span><br><span class="line">select &#x27;&#123;&quot;name&quot;: &quot;张三&quot;,&quot;age&quot;: 23,&quot;birthday&quot;: &quot;2011-11-11&quot;,&quot;gender&quot;: null&#125;&#x27;::jsonb;</span><br></pre></td></tr></table></figure></li>
-<li>构建表存储JSON<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">create table test(</span><br><span class="line">    id bigserial,</span><br><span class="line">    info json,</span><br><span class="line">    infob jsonb</span><br><span class="line">);</span><br><span class="line">insert into</span><br><span class="line">  test</span><br><span class="line">(info,infob)   </span><br><span class="line">  values </span><br><span class="line">(&#x27;&#123;&quot;name&quot;:            &quot;张三&quot;              ,&quot;age&quot;: 23,&quot;birthday&quot;: &quot;2011-11-11&quot;,&quot;gender&quot;: null&#125;&#x27;,</span><br><span class="line">&#x27;&#123;&quot;name&quot;:               &quot;张三&quot;             ,&quot;age&quot;: 23,&quot;birthday&quot;: &quot;2011-11-11&quot;,&quot;gender&quot;: null&#125;&#x27;)</span><br><span class="line">select * from test;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p><img src="/./assets/20241011/998c78f42473438f8697b2f79d72a6a4.png" alt="JSON构建索引"></p>
-<ul>
-<li>构建索引的效果<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">create index json_index on test(info);</span><br><span class="line">create index jsonb_index on test(infob);</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>JSON还支持很多函数，可以在文档中查询：<a target="_blank" rel="noopener" href="http://www.postgres.cn/docs/12/functions-json.html">http://www.postgres.cn/docs/12/functions-json.html</a></p>
-<h1 id="复合类型"><a href="#复合类型" class="headerlink" title="复合类型"></a>复合类型</h1><p>复合类型就好像Java中的一个对象，Java中有一个User，User和表做了一个映射，User中有个人信息对象，基于符合类型映射个人信息。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">   <span class="keyword">private</span> Integer id;</span><br><span class="line">   <span class="keyword">private</span> Info info;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Info</span> &#123;</span><br><span class="line">   <span class="keyword">private</span> String name;</span><br><span class="line">   <span class="keyword">private</span> Integer age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>按照上面的情况，将Info构建成一个复合类型</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 构建复合类型，映射上Info</span></span><br><span class="line"><span class="keyword">create</span> type type_info <span class="keyword">as</span> (name <span class="type">varchar</span>(<span class="number">32</span>),age <span class="type">int</span>);</span><br><span class="line"><span class="comment">-- 构建表，映射User</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> tb_user(</span><br><span class="line">    id serial,</span><br><span class="line">    info type_info</span><br><span class="line">);</span><br><span class="line"><span class="comment">-- 添加数据</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tb_user (info) <span class="keyword">values</span> ((<span class="string">&#x27;张三&#x27;</span>,<span class="number">23</span>));</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tb_user (info) <span class="keyword">values</span> ((<span class="string">&#x27;露丝&#x27;</span>,<span class="number">233</span>));</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tb_user (info) <span class="keyword">values</span> ((<span class="string">&#x27;jack&#x27;</span>,<span class="number">33</span>));</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tb_user (info) <span class="keyword">values</span> ((<span class="string">&#x27;李四&#x27;</span>,<span class="number">24</span>));</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user;</span><br></pre></td></tr></table></figure>
-
-<h1 id="数组类型"><a href="#数组类型" class="headerlink" title="数组类型"></a>数组类型</h1><p>数组还是要依赖其他类型，比如在设置住址，住址可能有多个住址，可以采用数组类型去修饰字符串。</p>
-<p>PostgreSQL中，指定数组的方式就是[]，可以指定一维数组，也支持二维甚至更多维数组。</p>
-<p>构建数组的方式：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> test;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test(</span><br><span class="line">    id serial,</span><br><span class="line">    col1 <span class="type">int</span>[],</span><br><span class="line">    col2 <span class="type">int</span>[<span class="number">2</span>],</span><br><span class="line">    col3 <span class="type">int</span>[][]</span><br><span class="line">);</span><br><span class="line"><span class="comment">-- 构建表指定数组长度后，并不是说数组内容只有2的长度，可以插入更多数据</span></span><br><span class="line"><span class="comment">-- 甚至在插入数据，如果将二维数组结构的数组扔到一维数组上，也可以存储。</span></span><br><span class="line"><span class="comment">-- 数组编写方式</span></span><br><span class="line"><span class="keyword">select</span> <span class="string">&#x27;&#123;&#123;how,are&#125;,&#123;are,you&#125;&#125;&#x27;</span>::<span class="type">varchar</span>[];</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">array</span>[[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>]];</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test (col1,col2,col3) <span class="keyword">values</span> (<span class="string">&#x27;&#123;1,2,3&#125;&#x27;</span>,<span class="string">&#x27;&#123;4,5,6&#125;&#x27;</span>,<span class="string">&#x27;&#123;7,8,9&#125;&#x27;</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test (col1,col2,col3) <span class="keyword">values</span> (<span class="string">&#x27;&#123;1,2,3&#125;&#x27;</span>,<span class="string">&#x27;&#123;4,5,6&#125;&#x27;</span>,<span class="keyword">array</span>[[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>]]);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test (col1,col2,col3) <span class="keyword">values</span> (<span class="string">&#x27;&#123;1,2,3&#125;&#x27;</span>,<span class="string">&#x27;&#123;4,5,6&#125;&#x27;</span>,<span class="string">&#x27;&#123;&#123;1,2&#125;,&#123;3,4&#125;&#125;&#x27;</span>);</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> test;</span><br></pre></td></tr></table></figure>
-
-<p>其他特殊情况？</p>
-<ul>
-<li>如果要存储字符串数组？</li>
-<li>如果存储的数组中有双引号怎么办？</li>
-<li>如果有大括号怎么办？</li>
-</ul>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 如果存储的数组中的值，有单引号怎么办？</span></span><br><span class="line"><span class="comment">-- 使用两个单引号，作为一个单引号使用</span></span><br><span class="line"><span class="keyword">select</span> <span class="string">&#x27;&#123;&#x27;&#x27;how&#x27;&#x27;&#125;&#x27;</span>::<span class="type">varchar</span>[];</span><br><span class="line"><span class="comment">-- 如果存储的数组中的值，有逗号怎么办？(PGSQL中的数组索引从1开始算，写0也是从1开始算。)</span></span><br><span class="line"><span class="comment">-- 用双引号将数组的数据包起来~</span></span><br><span class="line"><span class="keyword">select</span> (<span class="string">&#x27;&#123;&quot;how,are&quot;&#125;&#x27;</span>::<span class="type">varchar</span>[])[<span class="number">2</span>];</span><br><span class="line"><span class="comment">-- 如果存储的数组中的值，有双引号怎么办？</span></span><br><span class="line"><span class="comment">-- 如果要添加双引号，记得转义。</span></span><br><span class="line"><span class="keyword">select</span> (<span class="string">&#x27;&#123;&quot;\&quot;how\&quot;,are&quot;&#125;&#x27;</span>::<span class="type">varchar</span>[])[<span class="number">1</span>];</span><br></pre></td></tr></table></figure>
-
-<p>数组的比较方式</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 包含</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">array</span>[<span class="number">1</span>,<span class="number">2</span>] @<span class="operator">&gt;</span> <span class="keyword">array</span>[<span class="number">1</span>];</span><br><span class="line"><span class="comment">-- 被包含</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">array</span>[<span class="number">1</span>,<span class="number">2</span>] <span class="operator">&lt;</span>@ <span class="keyword">array</span>[<span class="number">1</span>,<span class="number">2</span>,<span class="number">4</span>];</span><br><span class="line"><span class="comment">-- 是否有相同元素</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">array</span>[<span class="number">2</span>,<span class="number">4</span>,<span class="number">4</span>,<span class="number">45</span>,<span class="number">1</span>] <span class="operator">&amp;&amp;</span> <span class="keyword">array</span>[<span class="number">1</span>];</span><br></pre></td></tr></table></figure>
 
       
     </div>

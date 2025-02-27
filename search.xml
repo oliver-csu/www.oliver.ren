@@ -1950,4 +1950,20 @@
         <tag>SQL</tag>
       </tags>
   </entry>
+  <entry>
+    <title>SQL注入之数据库概述</title>
+    <url>/2025/02/27/20250227-02.html</url>
+    <content><![CDATA[<p>数据库就是一个存储数据的仓库，数据库是以一定方式存储在一起，能与多个用户共享，具有尽可能小的冗余，与应用程序彼此独立的数据集合。</p>
+<h1 id="关系型数据库"><a href="#关系型数据库" class="headerlink" title="关系型数据库"></a>关系型数据库</h1><p>关系型数据库，存储的格式可以直观地反映实体间的关系，和常见的表格比较相似；</p>
+<p>关系型数据库中表与表之间有很多复杂的关联关系的；</p>
+<p>常见的关系型数据库有MySQL, Orcale, PostgreSQL, SQL Server等。</p>
+<h1 id="非关系型数据库"><a href="#非关系型数据库" class="headerlink" title="非关系型数据库"></a>非关系型数据库</h1><p>随着近些年技术方向的不断扩展，大量的NoSQL数据库如MongoDB，Redis出于简化数据库结构，避免冗余，影响性能的表连接，摒弃复杂分布式的目的被设计。</p>
+<p>NoSQL数据库适合追求速度和可扩展性，业务多变的场景。</p>
+<p><a href="https://db-engines.com/en/ranking">数据库排行榜</a></p>
+<p><img src="/./assets/20250227/c5ad3c29d3a44944be62c8134dfbdc6d.png" alt="数据库排行榜"></p>
+]]></content>
+      <tags>
+        <tag>SQL</tag>
+      </tags>
+  </entry>
 </search>
