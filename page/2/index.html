@@ -149,7 +149,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">32</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -171,6 +171,105 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/12/20241012-02.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Oliver King">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oliver's Blog">
+      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Oliver's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/12/20241012-02.html" class="post-title-link" itemprop="url">PostgreSQL中的锁</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-12 09:54:57" itemprop="dateCreated datePublished" datetime="2024-10-12T09:54:57+08:00">2024-10-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-02-27 19:22:44" itemprop="dateModified" datetime="2025-02-27T19:22:44+08:00">2025-02-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>PostgreSQL中主要有两种锁，一个表锁，一个行锁。</p>
+<p>PostgreSQL中也提供了页锁，咨询锁，但不需要关注，只是为了锁的完整性。</p>
+<h1 id="表锁"><a href="#表锁" class="headerlink" title="表锁"></a>表锁</h1><p>表锁显而易见，就是锁住整张表。</p>
+<p>表锁也分为很多种模式，其中最核心的两个：</p>
+<ul>
+<li>ACCESS SHARE：共享锁（读锁），读读操作不阻塞，但是不允许出现写操作并行；</li>
+<li>ACCESS EXCLUSIVE：互斥锁（写锁），无论什么操作进来，都阻塞。</li>
+</ul>
+<p>具体的可以查看官网文档：<a target="_blank" rel="noopener" href="http://postgres.cn/docs/12/explicit-locking.html">http://postgres.cn/docs/12/explicit-locking.html</a></p>
+<p>表锁的实现：</p>
+<p><img src="/./assets/20241012/5c734cd1b43e49d89c7089286d1c493b.png" alt="表锁语法"></p>
+<p>就是基于LOCK开启表锁，指定表的名字name，其次在MODE中指定锁的模式，NOWAIT可以指定是否在没有拿到锁时，一直等待。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 1号连接</span></span><br><span class="line"><span class="comment">-- 基于互斥锁，锁住test表</span></span><br><span class="line"><span class="comment">-- 先开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 基于默认的ACCESS EXCLUSIVE锁住test表</span></span><br><span class="line">lock test <span class="keyword">in</span> ACCESS SHARE mode;</span><br><span class="line"><span class="comment">-- 操作</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> test;</span><br><span class="line"><span class="comment">-- 提交事务，锁释放</span></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+<p>当1号连接基于事务开启后，锁住当前表之后，如果使用默认的ACCESS EXCLUSIVE，其他连接操作表时，会直接阻塞住。</p>
+<p>如果1号是基于ACCESS SHARE共享锁时，其他线程查询当前表是不会锁住的。</p>
+<h1 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h1><p>PostgreSQL的行锁和MySQL的基本是一模一样的，基于select for update就可以指定行锁。</p>
+<p>MySQL中有一个概念，for update时，如果select的查询没有命中索引，可能会锁表。</p>
+<p>PostgerSQL有个特点，一般情况，在select的查询没有命中索引时，他不一定会锁表，依然会实现行锁。</p>
+<p>PostgreSQL的行锁，就两个，一个for update，一个for share。</p>
+<p>在开启事务之后，直接执行select * from table where 条件 for update;</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 先开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 基于for update 锁住id为3的数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">3</span> <span class="keyword">for</span> <span class="keyword">update</span>;</span><br><span class="line"><span class="keyword">update</span> test <span class="keyword">set</span> name <span class="operator">=</span> <span class="string">&#x27;v1&#x27;</span> <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">3</span>;</span><br><span class="line"><span class="comment">-- 提交事务，锁释放</span></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+<p>其他的连接要操作当前行，会阻塞住。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1496,99 +1595,6 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 进入命令行</span><br><span class="line">psql</span><br><span class="line"># 查看有哪些库，如果是新安装的，有三个库：postgres，template0，template1</span><br></pre></td></tr></table></figure>
 
 <p>Windows版本的下载地址：<a target="_blank" rel="noopener" href="https://sbp.enterprisedb.com/getfile.jsp?fileid=1258242">https://sbp.enterprisedb.com/getfile.jsp?fileid=1258242</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/10/20241010-03.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Oliver King">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Oliver's Blog">
-      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Oliver's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/10/20241010-03.html" class="post-title-link" itemprop="url">PostgreSQL和MySQL的区别</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-10-10 18:43:05" itemprop="dateCreated datePublished" datetime="2024-10-10T18:43:05+08:00">2024-10-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-02-27 19:22:44" itemprop="dateModified" datetime="2025-02-27T19:22:44+08:00">2025-02-27</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>技术没有好坏之分，主要看一下是否符合业务的需要，能否解决业务需求；其次也要看社区的活跃度以及更新的频次。</p>
-<p>MySQL不支持的几点内容：</p>
-<ul>
-<li>MySQL的数据类型不够丰富；</li>
-<li>MySQL不支持序列概念（Sequence）；</li>
-<li>使用MySQL时，网上比较好用的插件；</li>
-<li>MySQL的性能优化监控工具不是很多，定位问题的成本是比较高；</li>
-<li>MySQL的主从复制没有一个官方的同步策略，同步问题难以解决；</li>
-<li>MySQL虽然开源但不够彻底。</li>
-</ul>
-<p>PostgreSQL相对MySQL上述问题的特点：</p>
-<ul>
-<li>PostgreSQL的数据类型嘎嘎丰富；</li>
-<li>PostgreSQL是有序列的概念的；</li>
-<li>PostgreSQL的插件特别丰富；</li>
-<li>PostgreSQL支持主从复制的同步操作，可以实现数据的零丢失；</li>
-<li>PostgreSQL的MVCC实现和MySQL不大一样（PostgreSQL一行数据会存储多个版本，最多可以存储40亿个事务版本）。</li>
-</ul>
 
       
     </div>
