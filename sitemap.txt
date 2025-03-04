@@ -1,3 +1,5 @@
+https://www.oliver.ren/2025/03/04/20250304-01.html
+https://www.oliver.ren/2025/02/27/20250227-04.html
 https://www.oliver.ren/2025/02/27/20250227-03.html
 https://www.oliver.ren/2025/02/27/20250227-02.html
 https://www.oliver.ren/2025/02/27/20250227-01.html
@@ -33,3 +35,4 @@ https://www.oliver.ren/tags/%E7%AE%97%E6%B3%95%E4%B8%8E%E6%95%B0%E6%8D%AE%E7%BB%
 https://www.oliver.ren/tags/PostgreSQL/
 https://www.oliver.ren/tags/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/
 https://www.oliver.ren/tags/SQL/
+https://www.oliver.ren/tags/MySQL/

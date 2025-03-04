@@ -149,12 +149,12 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -171,6 +171,217 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/12/20241012-01.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Oliver King">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oliver's Blog">
+      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Oliver's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/12/20241012-01.html" class="post-title-link" itemprop="url">PostgreSQL并发问题</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-12 09:43:35" itemprop="dateCreated datePublished" datetime="2024-10-12T09:43:35+08:00">2024-10-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-02-27 19:22:44" itemprop="dateModified" datetime="2025-02-27T19:22:44+08:00">2025-02-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="事务的隔离级别"><a href="#事务的隔离级别" class="headerlink" title="事务的隔离级别"></a>事务的隔离级别</h1><p>在不考虑隔离性的前提下，事务的并发可能会出现的问题：</p>
+<ul>
+<li>脏读：读到了其他事务未提交的数据（这种情况必须避免）。</li>
+<li>不可重复读：同一事务中，多次查询同一数据，结果不一致，因为其他事务修改造成的（一些业务中不可重复读不是问题）。</li>
+<li>幻读：同一事务中，多次查询同一数据，因为其他事务对数据进行了增删吗，导致出现了一些问题（一些业务中幻读不是问题）。</li>
+</ul>
+<p>针对这些并发问题，关系型数据库有一些事务的隔离级别，一般用4种。</p>
+<ul>
+<li>READ UNCOMMITTED：读未提交（啥用没有，并且PostgreSQL没有，提供了只是为了完整性）；</li>
+<li>READ COMMITTED：读已提交，可以解决脏读（PostgreSQL默认隔离级别）；</li>
+<li>REPEATABLE READ：可重复读，可以解决脏读和不可重复读（MySQL默认隔离级别，PostgreSQL也提供了，但是设置为可重复读，效果还是串行化）；</li>
+<li>SERIALIZABLE：串行化，问题都解决了，使用了锁，效率慢。</li>
+</ul>
+<p>PostgreSQL在老版本中，只有两个隔离级别，读已提交和串行化，在PostgreSQL中就不存在脏读问题。</p>
+<h1 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h1><p>如果一个数据库，频繁的进行读写操作，为了保证安全，采用锁的机制。但如果采用锁机制，如果一些事务在写数据，另外一个事务就无法读数据，会造成读写之间相互阻塞。 大多数的数据库都会采用 <strong>多版本并发控制MVCC</strong> 来解决这个问题。</p>
+<p>比如你要查询一行数据，但是这行数据正在被修改，事务还没提交，如果此时对这行数据加锁，会导致其他的读操作阻塞，需要等待。如果采用PostgreSQL，他的内部会针对这一行数据保存多个版本，如果数据正在被写入，包就保存之前的数据版本。让读操作去查询之前的版本，不需要阻塞。等写操作的事务提交了，读操作才能查看到最新的数据。 这几个及时可以确保  <strong>读写操作没有冲突</strong> ，这个就是MVCC的主要特点。</p>
+<p><strong>写写操作，和MVCC没关系，那个就是加锁的方式</strong>。</p>
+<p>注意：这里的MVCC是基于读已提交的，如果是串行化，那就读不到了。</p>
+<p>在操作之前，先了解一下PostgreSQL中，每条数据都会自带两个字段：</p>
+<ul>
+<li>xmin：给当前事务分配的数据版本。如果有其他事务做了写操作，并且提交事务了，就给xmin分配新的版本。</li>
+<li>xmax：当前事务没有存在新版本，xmax就是0。如果有其他事务做了写操作，未提交事务，将写操作的版本放到xmax中。事务提交后，xmax会分配到xmin中，然后xmax归0。</li>
+</ul>
+<p><img src="/./assets/20241012/0d533d36a6a8489e877f092ef76e8141.png" alt="xmin与xmax"></p>
+<p>基于上图的操作查看一波效果：</p>
+<ul>
+<li>事务A：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 左，事务A</span></span><br><span class="line"><span class="comment">--1、开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">--2、查询某一行数据,  xmin = 630,xmax = 0</span></span><br><span class="line"><span class="keyword">select</span> xmin,xmax,<span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br><span class="line"><span class="comment">--3、每次开启事务后，会分配一个事务ID 事务id=631</span></span><br><span class="line"><span class="keyword">select</span> txid_current();</span><br><span class="line"><span class="comment">--7、修改id为8的数据，然后在本事务中查询   xmin = 631, xmax = 0</span></span><br><span class="line"><span class="keyword">update</span> test <span class="keyword">set</span> name <span class="operator">=</span> <span class="string">&#x27;铃铛&#x27;</span> <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br><span class="line"><span class="keyword">select</span> xmin,xmax,<span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br><span class="line"><span class="comment">--9、提交事务</span></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>事务B：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 右，事务B</span></span><br><span class="line"><span class="comment">--4、开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">--5、查询某一行数据,  xmin = 630,xmax = 0</span></span><br><span class="line"><span class="keyword">select</span> xmin,xmax,<span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br><span class="line"><span class="comment">--6、每次开启事务后，会分配一个事务ID 事务id=632</span></span><br><span class="line"><span class="keyword">select</span> txid_current();</span><br><span class="line"><span class="comment">--8、事务A修改完，事务B再查询  xmin = 630  xmax = 631</span></span><br><span class="line"><span class="keyword">select</span> xmin,xmax,<span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br><span class="line"><span class="comment">--10、事务A提交后，事务B再查询  xmin = 631  xmax = 0</span></span><br><span class="line"><span class="keyword">select</span> xmin,xmax,<span class="operator">*</span> <span class="keyword">from</span> test <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">8</span>;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/11/20241011-05.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Oliver King">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oliver's Blog">
+      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Oliver's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/11/20241011-05.html" class="post-title-link" itemprop="url">PostgreSQL事务</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-11 17:01:59" itemprop="dateCreated datePublished" datetime="2024-10-11T17:01:59+08:00">2024-10-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-02-27 19:22:44" itemprop="dateModified" datetime="2025-02-27T19:22:44+08:00">2025-02-27</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h1><p>在日常操作中，对于一组相关操作，通常要求要么都成功，要么都失败。在关系型数据库中，称这一组操作为事务。为了保证整体事务的安全性，有ACID的概念：</p>
+<ul>
+<li>原子性A：事务是一个最小的执行单位，一次事务中的操作要么都成功，要么都失败。</li>
+<li>一致性C：在事务完成时，所有数据必须保持在一致的状态。（事务完成后吗，最终结果和预期结果是一致的）</li>
+<li>隔离性I：一次事务操作，要么是其他事务操作前的状态，要么是其他事务操作后的状态，不存在中间状态。</li>
+<li>持久性D：事务提交后，数据会落到本地磁盘，修改是永久性的。</li>
+</ul>
+<p>PostgreSQL中，在事务的并发问题里，也是基于MVCC，多版本并发控制去维护数据的一致性。相比于传统的锁操作，MVCC最大的有点就是可以让读写互相不冲突。</p>
+<p>当然，PostgreSQL也支持表锁和行锁，可以解决写写的冲突问题。</p>
+<p>PostgreSQL相比于其他数据，有一个比较大的优化，DDL也可以包含在一个事务中。比如集群中的操作，一个事务可以保证多个节点都构建出一个表，才算成功。</p>
+<h1 id="事务的基本使用"><a href="#事务的基本使用" class="headerlink" title="事务的基本使用"></a>事务的基本使用</h1><p>首先基于前面的各种操作，应该已经体会到了，PostgreSQL是自动提交事务，这跟MySQL是一样的。</p>
+<p>可以基于关闭PostgreSQL的自动提交事务来进行操作。</p>
+<p><img src="/./assets/20241011/8242ac908f9b458fa483140b0ee93307.png" alt="事务"></p>
+<p>但是上述方式比较麻烦，传统的方式就三个命令：</p>
+<ul>
+<li>begin：开始事务</li>
+<li>commit：提交事务</li>
+<li>rollback：回滚事务</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 操作</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test <span class="keyword">values</span> (<span class="number">7</span>,<span class="string">&#x27;bbb&#x27;</span>,<span class="number">12</span>,<span class="number">5</span>);</span><br><span class="line"><span class="comment">-- 提交事务 </span></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+<h1 id="保存点"><a href="#保存点" class="headerlink" title="保存点"></a>保存点</h1><p>比如项目中有一个大事务操作，不好控制，超时有影响，回滚会造成一切重来，成本太高。</p>
+<p>我针对大事务，拆分成几个部分，第一部分完成后，构建一个保存点。如果后面操作失败了，需要回滚，不需要全盘回滚，回滚到之前的保存点，继续重试。</p>
+<p>保存点似乎破坏了整体事务的原子性，但是只要操作合理，可以在保存点的举出上，做重试，只要重试不成功，依然可以全盘回滚。</p>
+<p>比如一个电商项目，下订单，扣库存，创建订单，删除购物车，增加用户积分，通知商家等等，这个就是一个大事务。可以将扣库存和下订单这种核心功能完成后，增加一个保存点，如果说后续操作有失败的，可以从创建订单成功后的阶段，再做重试。</p>
+<p>不过其实上述的业务，基于最终一致性有更好的处理方式，可以保证可用性。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- savepoint操作</span></span><br><span class="line"><span class="comment">-- 开启事务</span></span><br><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="comment">-- 插入一条数据</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test <span class="keyword">values</span> (<span class="number">8</span>,<span class="string">&#x27;铃铛&#x27;</span>,<span class="number">55</span>,<span class="number">11</span>);</span><br><span class="line"><span class="comment">-- 添加一个保存点</span></span><br><span class="line"><span class="keyword">savepoint</span> ok1;</span><br><span class="line"><span class="comment">-- 再插入数据,比如出了一场</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> test <span class="keyword">values</span> (<span class="number">9</span>,<span class="string">&#x27;大唐官府&#x27;</span>,<span class="number">66</span>,<span class="number">22</span>);</span><br><span class="line"><span class="comment">-- 回滚到之前的提交点</span></span><br><span class="line"><span class="keyword">rollback</span> <span class="keyword">to</span> <span class="keyword">savepoint</span> ok1;</span><br><span class="line"><span class="comment">-- 就可以开始重试操作，重试成功，commit，失败可以rollback;</span></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1396,224 +1607,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/10/20241010-02.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Oliver King">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Oliver's Blog">
-      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Oliver's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/10/20241010-02.html" class="post-title-link" itemprop="url">PostgreSQL介绍</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-10-10 17:29:28" itemprop="dateCreated datePublished" datetime="2024-10-10T17:29:28+08:00">2024-10-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-02-27 19:22:44" itemprop="dateModified" datetime="2025-02-27T19:22:44+08:00">2025-02-27</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>PostgreSQL是一个功能强大的 <strong>开源</strong> 的关系型数据库，底层基于C实现。</p>
-<p>PostgreSQL的开源协议和Linux内核版本的开源协议是一样的。也就是BSD协议，这个协议基本和MIT开源协议一样，就是你可以对PostgreSQL进行一些封装，然后商业化来收费。</p>
-<p>PostgreSQL的名字咋来的：之前叫Ingres，后面为了解决一些Ingres中的一些问题，作为后面的Ingres，就起名叫Postgre。</p>
-<p>PostgreSQL版本迭代的速度比较快，现在最新的正式的发布版本，已经到了15.RELEASE。</p>
-<p>PostgreSQL的版本选择一般有两种：</p>
-<ul>
-<li>如果为了稳定的运行，推荐使用12.x版本。</li>
-<li>如果想体验新特性，推荐使用14.x版本。</li>
-</ul>
-<p>PostgreSQL允许跨版本升级，而且没有什么大问题。</p>
-<p>PostgreSQL社区特别活跃，基本是三个月一发版，也就意味着很多常见的BUG都可以得到及时的修复。</p>
-<p>PostgreSQL其实在国外使用的比较多，国内暂时还是以MySQL为主。</p>
-<p>但是国内很多国产数据库都是基于PostgreSQL做的二次封装：比如华为GaussDB，还有腾讯的Tbase等。</p>
-<p>甚至很多公司原来用的Oracle，直接平转到PostgreSQL，同时国内的很多云厂商都支持PostgreSQL了。</p>
-<p>PostgreSQL因为开源，所以有很多做数据迁移的工具，可以快速的从MySQL，SQLServer，Oracle直接平转到PostgreSQL，比如pgloader这样的数据迁移工具。</p>
-<p>PostgreSQL的官方社区地址：<a target="_blank" rel="noopener" href="https://www.postgresql.org/">https://www.postgresql.org/</a></p>
-<p>PostgreSQL的国内社区地址：<a target="_blank" rel="noopener" href="http://www.postgres.cn/v2/home">http://www.postgres.cn/v2/home</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/10/20241010-01.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Oliver King">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Oliver's Blog">
-      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Oliver's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/10/20241010-01.html" class="post-title-link" itemprop="url">计算机的性能指标</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-10-10 16:40:59" itemprop="dateCreated datePublished" datetime="2024-10-10T16:40:59+08:00">2024-10-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-02-27 19:22:44" itemprop="dateModified" datetime="2025-02-27T19:22:44+08:00">2025-02-27</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="机器字长"><a href="#机器字长" class="headerlink" title="机器字长"></a>机器字长</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>也叫基本字长，参与运算的二进制数据的位数，决定了寄存器、ALU、数据总线位数，代表了运算精度</p>
-<h2 id="易混淆概念"><a href="#易混淆概念" class="headerlink" title="易混淆概念"></a>易混淆概念</h2><ul>
-<li>机器字长：一般等于内部寄存器的大小</li>
-<li>指令字长：一个指令包含的二进制码的位数</li>
-<li>存储字长：存储单元的二进制码的长度&#x2F;位数</li>
-</ul>
-<p>注意：所有字长都必须是字节的整数倍。</p>
-<p><img src="/./assets/20241010/71d36dda134e40c8b96ea996496f097f.png" alt="机器字长"></p>
-<h1 id="主存容量"><a href="#主存容量" class="headerlink" title="主存容量"></a>主存容量</h1><h2 id="基本概念-1"><a href="#基本概念-1" class="headerlink" title="基本概念"></a>基本概念</h2><p>一般指主存的最大容量，单位是字节Byte，运行时程序和数据都在主存中，主存容量越大，可运行的程序就越多，MAR位数（但不一定是当前机器安装内存的容量）决定了可寻址范围的最大值。</p>
-<p><img src="/./assets/20241010/624d4dca02014be5875079492bd2f194.png" alt="主存容量"></p>
-<h1 id="运算速度"><a href="#运算速度" class="headerlink" title="运算速度"></a>运算速度</h1><h2 id="吞吐量："><a href="#吞吐量：" class="headerlink" title="吞吐量："></a>吞吐量：</h2><p>单位时间内处理的请求数量，由如下因素决定：</p>
-<ul>
-<li>信息输入内存的速度</li>
-<li>CPU取指令的速度</li>
-<li>数据取出&#x2F;存入内存的速度</li>
-<li>从内存转出到外部设备的速度</li>
-</ul>
-<h2 id="响应时间"><a href="#响应时间" class="headerlink" title="响应时间"></a>响应时间</h2><p>从用户发送请求到收到响应经过的时间，，由如下因素决定：</p>
-<ul>
-<li>CPU时间（运行程序花费的时间）</li>
-<li>等待时间（磁盘访问&#x2F;主存访问&#x2F;IO操作&#x2F;OS开销&#x2F;网络传输）</li>
-</ul>
-<h2 id="CPU时钟周期"><a href="#CPU时钟周期" class="headerlink" title="CPU时钟周期"></a>CPU时钟周期</h2><p>单个动作所花费的时间</p>
-<ul>
-<li>节拍脉冲或T周期，即主频的倒数</li>
-<li>CPU中最小的时间单位，每个动作至少一个时钟周期</li>
-<li>单位：秒</li>
-</ul>
-<h2 id="主频（CPU时钟频率）"><a href="#主频（CPU时钟频率）" class="headerlink" title="主频（CPU时钟频率）"></a>主频（CPU时钟频率）</h2><p>单位时间完成基本动作的数量</p>
-<ul>
-<li>机器内部主时钟的频率</li>
-<li>主频越高花费时间越短，执行指令速度越快</li>
-<li>单位：Hz（赫兹），即次数&#x2F;秒</li>
-<li>时钟周期 &#x3D; 1&#x2F;主频</li>
-</ul>
-<h2 id="CPI（Clock-cycle-Per-Instruction）"><a href="#CPI（Clock-cycle-Per-Instruction）" class="headerlink" title="CPI（Clock cycle Per Instruction）"></a>CPI（Clock cycle Per Instruction）</h2><p>执行一条指令所需的时钟周期数</p>
-<h2 id="CPU执行时间"><a href="#CPU执行时间" class="headerlink" title="CPU执行时间"></a>CPU执行时间</h2><p>即运行一个程序所花费的时间，&#x3D; CPU时钟周期数&#x2F;主频&#x3D;（指令条数 * CPI）&#x2F;主频</p>
-<p>三要素（相互制约）：</p>
-<ul>
-<li>主频（时钟频率）</li>
-<li>每条指令所用的时钟周期数（CPI）</li>
-<li>指令条数</li>
-</ul>
-<h2 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h2><ul>
-<li>MIPS：Million Instructions Per Second &#x3D; 指令条数&#x2F;（执行时间*10^6）</li>
-<li>MFLOPS：Mega Floating-point Operations PS &#x3D; 浮点数操作次数&#x2F;(执行时间*10^6)</li>
-<li>GFLOPS：Giga Floating-point Operations PS &#x3D; 浮点数操作次数&#x2F;(执行时间*10^9)</li>
-<li>TFLOPS：Tera Floating-point Operations PS &#x3D; 浮点数操作次数&#x2F;(执行时间*10^12)</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
