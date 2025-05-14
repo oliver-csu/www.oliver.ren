@@ -149,7 +149,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -171,6 +171,75 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2025/05/14/20250514-01.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Oliver King">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Oliver's Blog">
+      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Oliver's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/05/14/20250514-01.html" class="post-title-link" itemprop="url">《Kafaka》</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-05-14 18:21:32 / 修改时间：18:22:01" itemprop="dateCreated datePublished" datetime="2025-05-14T18:21:32+08:00">2025-05-14</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1158,220 +1227,6 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pgloader 刚刚写好的脚本文件</span><br></pre></td></tr></table></figure>
 
 <p><img src="/./assets/20241012/56bebeef0f02497aaaa27fa5664c3142.png" alt="PGLOADER执行"></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.oliver.ren/2024/10/12/20241012-03.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Oliver King">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Oliver's Blog">
-      <meta itemprop="description" content="Oliver's Blog|小菜鸟要努力学习哦">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Oliver's Blog">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/12/20241012-03.html" class="post-title-link" itemprop="url">PostgreSQL的备份与恢复</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-10-12 10:28:30" itemprop="dateCreated datePublished" datetime="2024-10-12T10:28:30+08:00">2024-10-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-02-27 19:22:44" itemprop="dateModified" datetime="2025-02-27T19:22:44+08:00">2025-02-27</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>防止数据丢失的第一道防线就是备份。数据丢失有的是硬件损坏，还有人为的误删之类的，也有其他的原因导致误删数据。</p>
-<p>正常备份和恢复，如果公司有DBA，开发一般不用参与，但作为架构师还是要了解。</p>
-<p>在PostgreSQL中，有三种备份方式：</p>
-<p><strong>SQL备份（逻辑备份）</strong> ：其实就是利用数据库自带的类似dump的命令，或者是你用图形化界面执行导入导出时，底层就是基于这个dump命令实现的。</p>
-<p>优点：简单，操作方便还可靠。</p>
-<p>缺点：数据数据量比较大的时候，这种方式巨慢，可能导出一天，都无法导出所有数据。</p>
-<p><strong>文件系统备份（物理备份）</strong> ：其实就是找到当前数据库，数据文件在磁盘存储的位置，将数据文件直接复制一份或多份，存储在不同的物理机上，即便物理机故障，还有其他物理机。</p>
-<p>优点：相比逻辑备份，恢复的速度快。</p>
-<p>缺点：在备份数据时，可能数据还正在写入，一定程度上会丢失数据。 在恢复数据时，也需要注意数据库的版本和环境必须保持高度的一致。如果是线上正在运行的数据库，这种复制的方式无法在生产环境实现。</p>
-<p><strong>如果说要做数据的迁移，这种方式还不错滴。</strong></p>
-<p><strong>归档备份：（也属于物理备份）</strong></p>
-<p>先了解几个概念，在PostgreSQL有多个子进程来辅助一些操作：</p>
-<ul>
-<li>BgWriter进程：BgWriter是将内存中的数据写到磁盘中的一个辅助进程。当向数据库中执行写操作后，数据不会马上持久化到磁盘里。这个主要是为了提升性能。BgWriter会周期性的将内存中的数据写入到磁盘。<ul>
-<li>如果快了，IO操作频繁，效率慢；</li>
-<li>如果慢了，有查询操作需要内存中的数据时，需要BgWriter现把数据从内存写到磁盘中，再提供给查询操作作为返回结果，会导致查询操作效率变低；</li>
-<li>考虑一个问题： <strong>事务提交了，数据没落到磁盘，这时，服务器宕机了怎么办？</strong></li>
-</ul>
-</li>
-<li>WalWriter进程：WAL就是write ahead log的缩写，说人话就是预写日志（redo log）。其实数据还在内存中时，其实已经写入到WAL日志中一份，这样一来，即便BgWriter进程没写入到磁盘中时，数据也不会丢失。<ul>
-<li>WAL能单独做备份么？单独不行！</li>
-<li>但是WAL日志有个问题，这个日志会循环使用，WAL日志有大小的线程，只能保存指定时间的日志信息，如果超过了，会覆盖之前的日志。</li>
-</ul>
-</li>
-<li>PgArch进程：WAL日志会循环使用，数据会丢失。没关系，还有一个归档的进程，会在切换wal日志前，将WAL日志备份出来。PostgreSQL也提供了一个全量备份的操作。可以根据WAL日志，选择一个事件点，进行恢复。</li>
-</ul>
-<p>查看WAL日志：</p>
-<p><img src="/./assets/20241012/d79b1442bef340b5926929de9e850b5e.png" alt="查看WAL日志文件列表"></p>
-<p>这些就是归档日志。</p>
-<blockquote>
-<p>wal日志的名称，是三块内容组成，</p>
-<p>没8个字符分成一组，用16进制标识的</p>
-<p>00000001 00000000 0000000A</p>
-<p>时间线    逻辑id    物理id</p>
-</blockquote>
-<p>查询当前库用的是哪个wal日志：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 查看当前使用的wal日志  查询到的lsn：0/47233270</span></span><br><span class="line"><span class="keyword">select</span> pg_current_wal_lsn();</span><br><span class="line"><span class="comment">-- 基于lsn查询具体的wal日志名称  000000010000000000000047</span></span><br><span class="line"><span class="keyword">select</span> pg_walfile_name(<span class="string">&#x27;0/47233270&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>归档默认不是开启的，需要手动开启归档操作，才能保证wal日志的完整性</p>
-<p>修改postgresql.conf文件</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 开启wal日志的内容，注释去掉即可</span><br><span class="line">wal_level = replica</span><br><span class="line">fsync = on</span><br></pre></td></tr></table></figure>
-
-<p><img src="/./assets/20241012/c6208a5990ad498d8d12bb993ce61eb0.png" alt="postgresql.conf开启归档wal"></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 开启归档操作</span><br><span class="line">archive_mode = on</span><br><span class="line"># 修改一小下命令，修改存放归档日志的路径</span><br><span class="line">archive_command = &#x27;test ! -f /archive/%f &amp;&amp; cp %p /archive/%f&#x27;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/./assets/20241012/a84bfa1e23914bacbd2c0f0f0fc4bed9.png" alt="postgresql.conf开启归档"></p>
-<p><strong>修改完上述配置文件后，记得重启postgreSQL进程，才会生效！</strong></p>
-<p>归档操作执行时，需要保证&#x2F;archive存在，并且postgres用户有权限进行w操作</p>
-<p>构建&#x2F;archive路径</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># postgres没有权限在/目录下构建目录</span></span><br><span class="line"><span class="comment"># 切换到root，构建目录，将目录的拥有者更改为postgres</span></span><br><span class="line"><span class="built_in">mkdir</span> /archive</span><br><span class="line"><span class="built_in">chown</span> -R postgres. archive</span><br></pre></td></tr></table></figure>
-
-<p>在当前库中做大量写操作，接入到wal日志，重置切换wal日志，再查看归档情况。</p>
-<p>发现，将当前的正在使用的wal日志和最新的上一个wal日志归档过来了，但是之前的没归档。</p>
-<p>这个不是问题，后期备份时，会执行命令，这个命令会直接要求wal日志立即归档，然后最全量备份。</p>
-<h1 id="逻辑备份-恢复"><a href="#逻辑备份-恢复" class="headerlink" title="逻辑备份&amp;恢复"></a>逻辑备份&amp;恢复</h1><p>PostgreSQL提供了pg_dump以及pg_dumpall的命令来实现逻辑备份。</p>
-<p>这两命令差不多，看名字猜！</p>
-<p>pg_dump这种备份，不会造成用户对数据的操作出现阻塞。</p>
-<p>数据库不是很大的时候，pg_dump也不是不成！</p>
-<p>查看命令使用帮助：</p>
-<p><img src="/./assets/20241012/019b3eb2967f42aba79b20f5630b030b.png" alt="pg_dump命令使用帮助"></p>
-<p>这个命令从三块去看：<a target="_blank" rel="noopener" href="http://postgres.cn/docs/12/app-pgdump.html">http://postgres.cn/docs/12/app-pgdump.html</a></p>
-<ul>
-<li>连接的信息，指定连接哪个库，用哪个用户~</li>
-<li>option的信息有就点多，查看官网。</li>
-<li>备份的数据库！</li>
-</ul>
-<p>备份库中的全部数据。</p>
-<p><img src="/./assets/20241012/bd17eea943bb469abf49c08eda67777b.png" alt="备份整个数据库"></p>
-<p>删除当前数据库中的表等信息，然后恢复数据</p>
-<p><img src="/./assets/20241012/3dfb7ccdb7f44d129d12afbcd201f68f.png" alt="恢复整个数据库"></p>
-<p>除此之外，也可以通过图形化界面备份，在库的位置点击备份就成，导出一个文本文件。</p>
-<h1 id="物理备份（归档-物理）"><a href="#物理备份（归档-物理）" class="headerlink" title="物理备份（归档+物理）"></a>物理备份（归档+物理）</h1><p>这里需要基于前面的文件系统的备份和归档备份实现最终的操作</p>
-<p>单独使用文件系统的方式不推荐，因为数据会丢失。</p>
-<p>这里直接使用PostgreSQL提供的pg_basebackup命令来实现。</p>
-<p>pg_basebackup会做两个事情：</p>
-<ul>
-<li>将内存中的脏数据落到磁盘中，然后将数据全部备份；</li>
-<li>将wal日志直接做归档，然后将归档也备走。</li>
-</ul>
-<p>查看pg_basebackup命令使用帮助：</p>
-<p><img src="/./assets/20241012/edbd4c4ac2484a77804e6f8e6e8252dd.png" alt="pg_basebackup命令使用帮助"></p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -D 指定备份文件的存储位置</span></span><br><span class="line"><span class="comment"># -Ft 备份文件打个包</span></span><br><span class="line"><span class="comment"># -Pv 输出备份的详细信息</span></span><br><span class="line"><span class="comment"># -U 用户名（要拥有备份的权限）</span></span><br><span class="line"><span class="comment"># -h ip地址  -p 端口号</span></span><br><span class="line"><span class="comment"># -R 复制写配置文件</span></span><br><span class="line">pg_basebackup -D /pg_basebackup -Ft -Pv -Upostgres -h 192.168.11.32 -p 5432 -R</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>提前准备出&#x2F;pg_basebackup目录（将拥有者赋予postgres用户）<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /pg_basebackup</span><br><span class="line">chown -R postgres. /pg_basebackup/</span><br></pre></td></tr></table></figure></li>
-<li>给postgres用户提供replication的权限，修改pg_hba.conf，记得重启生效<br><img src="/./assets/20241012/d074286b7e8c441e83af33deab5e443c.png" alt="pg_hba.conf给postgres用户提供replication的权限"></li>
-<li>执行备份<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pg_basebackup -D /pg_basebackup -Ft -Pv -Upostgres -h 192.168.11.32 -p 5432 -R</span><br></pre></td></tr></table></figure></li>
-<li>需要输入postgres的密码，这里可以设置，重新备份。<br><img src="/./assets/20241012/48497030a29c4e5db466129b8f2ab88a.png" alt="重新备份"></li>
-<li>执行备份<br><img src="/./assets/20241012/17fa8dca9aa341a6912d5ff6d61d7dab.png" alt="执行备份"><br><img src="/./assets/20241012/acfd93a923f141638b05786cc4577252.png" alt="备份结果"></li>
-</ul>
-<h1 id="物理恢复（归档-物理）"><a href="#物理恢复（归档-物理）" class="headerlink" title="物理恢复（归档+物理）"></a>物理恢复（归档+物理）</h1><p>模拟数据库崩盘，先停止postgresql服务，然后直接删掉data目录下的全部内容</p>
-<p><img src="/./assets/20241012/25e9ac006b994c319e3b690392e4936b.png" alt="模拟数据库崩溃"></p>
-<p>将之前备份的两个文件准备好，一个base.tar，一个pg_wal.tar</p>
-<p>第一步：将base.tar中的内容，全部解压到 <strong>12&#x2F;data</strong> 目录下</p>
-<p>第二步：将pg_wal.tar中的内容，全部解压到 <strong>&#x2F;archive</strong> 目录下</p>
-<p><img src="/./assets/20241012/279edaa10c064b4bbd4bc4cd13092bd0.png" alt="解压备份文件"></p>
-<p>第三步：在postgresql.auto.conf文件中，指定归档文件的存储位置，以及恢复数据的方式</p>
-<p><img src="/./assets/20241012/da544c2ef4cb4c6bbb93b72ed9f2e73f.png" alt="修改postgresql.auto.conf"></p>
-<p>第四步：启动postgresql服务</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="keyword">start</span> postgresql<span class="number">-12</span></span><br></pre></td></tr></table></figure>
-
-<p>第五步：启动后，发现查询没问题，但是执行写操作时发现不让写。需要执行一个函数，取消这种恢复数据后的状态，才允许正常的执行写操作。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> pg_wal_replay_resume();</span><br></pre></td></tr></table></figure>
-
-<h1 id="物理备份-恢复（PITR-Point-in-time-Recovery）"><a href="#物理备份-恢复（PITR-Point-in-time-Recovery）" class="headerlink" title="物理备份&amp;恢复（PITR-Point in time Recovery）"></a>物理备份&amp;恢复（PITR-Point in time Recovery）</h1><h2 id="模拟场景"><a href="#模拟场景" class="headerlink" title="模拟场景"></a>模拟场景</h2><blockquote>
-<p>场景：每天凌晨02:00，开始做全备（PBK），到了第二天，如果有人14:00分将数据做了误删，希望将数据恢复到14:00分误删之前的状态？</p>
-</blockquote>
-<p>1、恢复全备数据，使用PBK的全备数据恢复到凌晨02:00的数据。（数据会丢失很多）</p>
-<p>2、归档恢复：备份中的归档，有02:00~14:00之间的额数据信息，可以基于归档日志将数据恢复到指定的事务id或者是指定时间点，从而实现数据的完整恢复。</p>
-<h2 id="准备场景和具体操作"><a href="#准备场景和具体操作" class="headerlink" title="准备场景和具体操作"></a>准备场景和具体操作</h2><p>1、构建一张t3表查询一些数据</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 构建一张表</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> t3 (id <span class="type">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t3 <span class="keyword">values</span> (<span class="number">1</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t3 <span class="keyword">values</span> (<span class="number">11</span>);</span><br></pre></td></tr></table></figure>
-
-<p>2、模拟凌晨2点开始做全备操作</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pg_basebackup -D /pg_basebackup -Ft -Pv -Upostgres -h 192.168.11.32 -p 5432 -R</span><br></pre></td></tr></table></figure>
-
-<p>3、再次做一些写操作，然后误删数据</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 凌晨2点已经全备完毕</span></span><br><span class="line"><span class="comment">-- 模拟第二天操作</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t3 <span class="keyword">values</span> (<span class="number">111</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t3 <span class="keyword">values</span> (<span class="number">1111</span>);</span><br><span class="line"><span class="comment">-- 误删操作  2023年3月20日20:13:26</span></span><br><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> t3;</span><br></pre></td></tr></table></figure>
-
-<p>4、恢复数据（确认有归档日志）</p>
-<p>将当前服务的数据全部干掉，按照之前的全备恢复的套路先走着</p>
-<p><img src="/./assets/20241012/2835a0281f83452c8b5dabd1da64089d.png" alt="模拟数据库崩溃"></p>
-<p>然后将全备的内容中的base.tar扔data目录下，归档日志也扔到&#x2F;archive位置。</p>
-<p>5、查看归档日志，找到指定的事务id</p>
-<p>查看归档日志，需要基于postgresql提供的一个命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 如果命令未找到，说明两种情况，要么没有这个可执行文件，要么是文件在，没设置环境变量</span><br><span class="line"># 咱们这是后者</span><br><span class="line">pg_waldump</span><br><span class="line"># 也可以采用全路径的方式</span><br><span class="line">/usr/pgsql-12/bin/pg_waldump</span><br></pre></td></tr></table></figure>
-
-<p><img src="/./assets/20241012/74af32dd0a3b489cb0ac37fe1e97bf7d.png" alt="查看备份文件内容"></p>
-<p><img src="/./assets/20241012/d4a24917de794f86beba7142495b4854.png" alt="找到对应的事务ID"></p>
-<p>6、修改data目录下的恢复数据的方式</p>
-<p>修改postgresql.auto.conf文件</p>
-<p>将之前的最大恢复，更换为指定的事务id恢复</p>
-<p>基于提供的配置例子，如何指定事务id</p>
-<p><img src="/./assets/20241012/171f414c5bbb440c8816db7e2474636d.png" alt="如何指定事务ID"></p>
-<p>修改postgresql.auto.conf文件指定好事务ID</p>
-<p><img src="/./assets/20241012/4cd883970f4a427dbc644c327d54187c.png" alt="指定事务ID"></p>
-<p>7、启动postgreSQL服务，查看是否恢复到指定事务ID</p>
-<p><img src="/./assets/20241012/71496e35b68e4c069c00b53d5cafbe1c.png" alt="查看恢复结果"></p>
-<p>8、记得执行会后的函数，避免无法执行写操作</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select pg_wal_replay_resume();</span><br></pre></td></tr></table></figure>
 
       
     </div>
